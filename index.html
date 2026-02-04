@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Antor H Gifari | Cyberpunk Portfolio</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #00f3ff;
+            --secondary: #8a2be2;
+            --accent: #ff0080;
+            --dark: #0a0a0f;
+            --darker: #050508;
+            --glass: rgba(20, 20, 30, 0.7);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--darker);
+            color: #fff;
+            overflow-x: hidden;
+            cursor: none;
+        }
+
+        h1, h2, h3, h4, .logo, .cyber-text {
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        /* Custom Cursor */
+        .cursor {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--primary);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            mix-blend-mode: difference;
+            transition: transform 0.2s;
+        }
+
+        .cursor-follower {
+            width: 8px;
+            height: 8px;
+            background-color: var(--primary);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9998;
+            transition: transform 0.4s;
+        }
+
+        /* Glassmorphism */
+        .glass {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Cyberpunk Text Effect */
+        .cyber-text {
+            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 15px rgba(0, 243, 255, 0.5);
+        }
+
+        /* Section Spacing */
+        section {
+            padding: 6rem 2rem;
+            position: relative;
+        }
+
+        /* Section Reveal Animation */
+        .section-reveal {
+            opacity: 0;
+            transform: translateY(50px);
+        }
+
+        /* Magnetic Button */
+        .magnetic-btn {
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+
+        .magnetic-btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* Skill Card Hover Effect */
+        .skill-card {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform-style: preserve-3d;
+        }
+
+        .skill-card:hover {
+            transform: translateY(-10px) rotateX(5deg);
+            box-shadow: 0 20px 40px rgba(0, 243, 255, 0.2);
+        }
+
+        /* Project Gallery Hover Effect */
+        .project-item {
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .project-item:hover {
+            transform: scale(1.05) rotateY(5deg);
+            z-index: 10;
+        }
+
+        /* Particle Background */
+        #particles-js {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+
+        /* Glowing Border */
+        .glow-border {
+            position: relative;
+            border-radius: 10px;
+        }
+
+        .glow-border::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, var(--primary), var(--secondary), var(--accent), var(--primary));
+            border-radius: 12px;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+
+        .glow-border:hover::before {
+            opacity: 1;
+            animation: glow 2s linear infinite;
+        }
+
+        @keyframes glow {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            section {
+                padding: 4rem 1rem;
+            }
+            
+            .cursor, .cursor-follower {
+                display: none;
+            }
+            
+            body {
+                cursor: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Custom Cursor -->
+    <div class="cursor"></div>
+    <div class="cursor-follower"></div>
+
+    <!-- Navigation -->
+    <nav class="glass fixed w-full z-50 py-4 px-8">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="logo text-2xl font-bold cyber-text">AHG</div>
+            <div class="hidden md:flex space-x-8">
+                <a href="#home" class="text-gray-300 hover:text-white hover:cyber-text transition-all duration-300">Home</a>
+                <a href="#about" class="text-gray-300 hover:text-white hover:cyber-text transition-all duration-300">About</a>
+                <a href="#skills" class="text-gray-300 hover:text-white hover:cyber-text transition-all duration-300">Skills</a>
+                <a href="#projects" class="text-gray-300 hover:text-white hover:cyber-text transition-all duration-300">Projects</a>
+                <a href="#contact" class="text-gray-300 hover:text-white hover:cyber-text transition-all duration-300">Contact</a>
+            </div>
+            <div class="md:hidden text-2xl">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="min-h-screen flex items-center relative overflow-hidden">
+        <div id="particles-js"></div>
+        <div class="container mx-auto px-4 z-10">
+            <div class="max-w-4xl mx-auto text-center">
+                <h1 class="text-5xl md:text-7xl lg:text-8xl font-bold mb-6">
+                    <span class="cyber-text" id="main-name">Antor H Gifari</span>
+                </h1>
+                <p class="text-xl md:text-2xl text-gray-300 mb-10 max-w-2xl mx-auto">
+                    Where <span class="text-red-400 font-semibold">Political Science</span> meets 
+                    <span class="cyber-text font-semibold">Cutting-Edge Technology</span>
+                </p>
+                <div class="flex flex-wrap justify-center gap-6">
+                    <a href="#about" class="magnetic-btn glass px-8 py-4 rounded-full font-semibold text-lg cyber-text">
+                        Explore My Journey <i class="ml-2 fas fa-arrow-down"></i>
+                    </a>
+                    <a href="#projects" class="magnetic-btn border-2 border-cyan-500 px-8 py-4 rounded-full font-semibold text-lg hover:bg-cyan-500/10 transition-all">
+                        View Projects <i class="ml-2 fas fa-code"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2">
+            <div class="animate-bounce text-cyan-400">
+                <i class="fas fa-chevron-down text-3xl"></i>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="section-reveal">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl md:text-5xl font-bold text-center mb-16 cyber-text">About Me</h2>
+            <div class="glass rounded-2xl p-8 md:p-12 max-w-6xl mx-auto">
+                <div class="grid md:grid-cols-2 gap-12 items-center">
+                    <div class="space-y-6">
+                        <h3 class="text-3xl font-bold mb-4">The Unconventional Path</h3>
+                        <div class="space-y-4">
+                            <div class="p-4 bg-gradient-to-r from-purple-900/30 to-cyan-900/30 rounded-xl border-l-4 border-purple-500">
+                                <h4 class="text-xl font-semibold mb-2">🎓 Formal Education</h4>
+                                <p class="text-gray-300">Department of Political Science</p>
+                                <p class="text-cyan-300">Govt. Keshab Chandra College, Jhenaidah</p>
+                            </div>
+                            <div class="p-4 bg-gradient-to-r from-cyan-900/30 to-pink-900/30 rounded-xl border-l-4 border-cyan-500">
+                                <h4 class="text-xl font-semibold mb-2">💻 Passion & Expertise</h4>
+                                <p class="text-gray-300">Self-taught technologist specializing in cutting-edge fields at the intersection of hardware and software.</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-300 leading-relaxed">
+                            My journey from political theory to technological innovation has given me a unique perspective on problem-solving. 
+                            I approach tech challenges with the analytical rigor of a social scientist and the creativity of an engineer.
+                        </p>
+                    </div>
+                    <div class="relative">
+                        <div class="glow-border glass p-2 rounded-xl">
+                            <div class="bg-gradient-to-br from-gray-900 to-black p-6 rounded-lg">
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div class="text-center p-4 rounded-lg bg-gray-800/50">
+                                        <i class="fas fa-university text-4xl text-purple-500 mb-3"></i>
+                                        <h4 class="font-bold">Political Analysis</h4>
+                                        <p class="text-sm text-gray-400 mt-2">Systems thinking & critical analysis</p>
+                                    </div>
+                                    <div class="text-center p-4 rounded-lg bg-gray-800/50">
+                                        <i class="fas fa-robot text-4xl text-cyan-500 mb-3"></i>
+                                        <h4 class="font-bold">Robotics</h4>
+                                        <p class="text-sm text-gray-400 mt-2">Embedded systems & automation</p>
+                                    </div>
+                                    <div class="text-center p-4 rounded-lg bg-gray-800/50">
+                                        <i class="fas fa-gamepad text-4xl text-green-500 mb-3"></i>
+                                        <h4 class="font-bold">Game Dev</h4>
+                                        <p class="text-sm text-gray-400 mt-2">Immersive experiences & simulation</p>
+                                    </div>
+                                    <div class="text-center p-4 rounded-lg bg-gray-800/50">
+                                        <i class="fas fa-brain text-4xl text-pink-500 mb-3"></i>
+                                        <h4 class="font-bold">AI/ML</h4>
+                                        <p class="text-sm text-gray-400 mt-2">Deep learning & computer vision</p>
+                                    </div>
+                                </div>
+                                <div class="mt-6 pt-6 border-t border-gray-700">
+                                    <p class="text-center italic text-gray-400">
+                                        "Bridging the gap between humanities and technology to create innovative solutions"
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills & Software Section -->
+    <section id="skills" class="section-reveal bg-gradient-to-b from-darker to-gray-900/30">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl md:text-5xl font-bold text-center mb-16 cyber-text">Skills & Expertise</h2>
+            
+            <!-- Skills Cloud -->
+            <div class="max-w-6xl mx-auto mb-20">
+                <div class="relative h-80 md:h-96">
+                    <!-- Floating skill elements -->
+                    <div class="skill-card glass absolute top-1/4 left-1/4 p-6 rounded-2xl w-48 transform -rotate-6">
+                        <div class="text-center">
+                            <i class="fas fa-robot text-5xl text-cyan-400 mb-4"></i>
+                            <h3 class="text-xl font-bold mb-2">Robotics</h3>
+                            <p class="text-gray-400 text-sm">Embedded Systems, Automation, IoT</p>
+                        </div>
+                    </div>
+                    
+                    <div class="skill-card glass absolute top-1/3 right-1/4 p-6 rounded-2xl w-48 transform rotate-6">
+                        <div class="text-center">
+                            <i class="fas fa-gamepad text-5xl text-green-400 mb-4"></i>
+                            <h3 class="text-xl font-bold mb-2">Game Development</h3>
+                            <p class="text-gray-400 text-sm">Unity Engine, 3D Modeling, VR</p>
+                        </div>
+                    </div>
+                    
+                    <div class="skill-card glass absolute bottom-1/4 left-1/3 p-6 rounded-2xl w-48">
+                        <div class="text-center">
+                            <i class="fas fa-eye text-5xl text-purple-400 mb-4"></i>
+                            <h3 class="text-xl font-bold mb-2">Computer Vision</h3>
+                            <p class="text-gray-400 text-sm">YOLO v8, Object Detection</p>
+                        </div>
+                    </div>
+                    
+                    <div class="skill-card glass absolute bottom-1/3 right-1/3 p-6 rounded-2xl w-48 transform -rotate-3">
+                        <div class="text-center">
+                            <i class="fas fa-brain text-5xl text-pink-400 mb-4"></i>
+                            <h3 class="text-xl font-bold mb-2">Deep Learning</h3>
+                            <p class="text-gray-400 text-sm">Neural Networks, AI Models</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Software Expertise -->
+            <div class="max-w-5xl mx-auto">
+                <h3 class="text-3xl font-bold text-center mb-12 cyber-text">Software Mastery</h3>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="glass rounded-xl p-8 text-center transform hover:scale-105 transition-all duration-300">
+                        <div class="mb-6">
+                            <i class="fab fa-unity text-6xl text-white"></i>
+                        </div>
+                        <h4 class="text-2xl font-bold mb-3">Unity Engine</h4>
+                        <p class="text-gray-400">Professional game development, 3D simulation, and interactive experiences.</p>
+                        <div class="mt-6 h-2 bg-gray-800 rounded-full overflow-hidden">
+                            <div class="h-full bg-green-500 rounded-full" style="width: 95%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="glass rounded-xl p-8 text-center transform hover:scale-105 transition-all duration-300">
+                        <div class="mb-6">
+                            <i class="fas fa-cube text-6xl text-cyan-400"></i>
+                        </div>
+                        <h4 class="text-2xl font-bold mb-3">Fusion 360</h4>
+                        <p class="text-gray-400">CAD modeling, mechanical design, and prototyping for robotics.</p>
+                        <div class="mt-6 h-2 bg-gray-800 rounded-full overflow-hidden">
+                            <div class="h-full bg-cyan-500 rounded-full" style="width: 90%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="glass rounded-xl p-8 text-center transform hover:scale-105 transition-all duration-300">
+                        <div class="mb-6">
+                            <div class="text-5xl font-bold bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">YOLO</div>
+                            <p class="text-sm text-gray-500 mt-1">v8</p>
+                        </div>
+                        <h4 class="text-2xl font-bold mb-3">Computer Vision</h4>
+                        <p class="text-gray-400">Real-time object detection, tracking, and image analysis.</p>
+                        <div class="mt-6 h-2 bg-gray-800 rounded-full overflow-hidden">
+                            <div class="h-full bg-purple-500 rounded-full" style="width: 88%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Project Gallery -->
+    <section id="projects" class="section-reveal">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl md:text-5xl font-bold text-center mb-16 cyber-text">Project Gallery</h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+                <!-- Project 1 -->
+                <div class="project-item glass rounded-2xl overflow-hidden">
+                    <div class="relative overflow-hidden h-56">
+                        <div class="absolute inset-0 bg-gradient-to-br from-cyan-900/40 to-purple-900/40 flex items-center justify-center">
+                            <i class="fas fa-robot text-7xl text-cyan-400"></i>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-2xl font-bold mb-3">Autonomous Drone System</h3>
+                        <p class="text-gray-400 mb-4">AI-powered drone with computer vision for object tracking and autonomous navigation.</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-3 py-1 bg-cyan-900/50 text-cyan-300 rounded-full text-sm">Robotics</span>
+                            <span class="px-3 py-1 bg-purple-900/50 text-purple-300 rounded-full text-sm">Computer Vision</span>
+                            <span class="px-3 py-1 bg-green-900/50 text-green-300 rounded-full text-sm">AI</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Project 2 -->
+                <div class="project-item glass rounded-2xl overflow-hidden">
+                    <div class="relative overflow-hidden h-56">
+                        <div class="absolute inset-0 bg-gradient-to-br from-green-900/40 to-blue-900/40 flex items-center justify-center">
+                            <i class="fab fa-unity text-7xl text-white"></i>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-2xl font-bold mb-3">Cyberpunk VR Experience</h3>
+                        <p class="text-gray-400 mb-4">Immersive virtual reality game set in a futuristic city with interactive NPCs.</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-3 py-1 bg-green-900/50 text-green-300 rounded-full text-sm">Unity</span>
+                            <span class="px-3 py-1 bg-blue-900/50 text-blue-300 rounded-full text-sm">VR</span>
+                            <span class="px-3 py-1 bg-pink-900/50 text-pink-300 rounded-full text-sm">3D Modeling</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Project 3 -->
+                <div class="project-item glass rounded-2xl overflow-hidden">
+                    <div class="relative overflow-hidden h-56">
+                        <div class="absolute inset-0 bg-gradient-to-br from-purple-900/40 to-pink-900/40 flex items-center justify-center">
+                            <i class="fas fa-brain text-7xl text-pink-400"></i>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-2xl font-bold mb-3">Real-time Object Detection</h3>
+                        <p class="text-gray-400 mb-4">YOLO v8 implementation for real-time object detection with 95%+ accuracy.</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-3 py-1 bg-purple-900/50 text-purple-300 rounded-full text-sm">YOLO v8</span>
+                            <span class="px-3 py-1 bg-red-900/50 text-red-300 rounded-full text-sm">Deep Learning</span>
+                            <span class="px-3 py-1 bg-cyan-900/50 text-cyan-300 rounded-full text-sm">Python</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-16">
+                <a href="#" class="magnetic-btn glass px-8 py-4 rounded-full font-semibold text-lg cyber-text inline-flex items-center">
+                    View All Projects <i class="ml-3 fas fa-external-link-alt"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="section-reveal">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl md:text-5xl font-bold text-center mb-16 cyber-text">Get In Touch</h2>
+            <div class="max-w-4xl mx-auto">
+                <div class="glass rounded-2xl p-8 md:p-12">
+                    <div class="grid md:grid-cols-2 gap-12">
+                        <div>
+                            <h3 class="text-3xl font-bold mb-6">Let's Connect</h3>
+                            <p class="text-gray-300 mb-8">
+                                Interested in collaborating on cutting-edge tech projects? 
+                                Whether it's robotics, game development, or AI, I'm always open to discussing innovative ideas.
+                            </p>
+                            <div class="space-y-6">
+                                <div class="flex items-center">
+                                    <div class="w-12 h-12 rounded-full bg-cyan-900/30 flex items-center justify-center mr-4">
+                                        <i class="fas fa-envelope text-cyan-400"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-gray-400">Email</p>
+                                        <p class="font-semibold">contact@antorgifari.dev</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center">
+                                    <div class="w-12 h-12 rounded-full bg-purple-900/30 flex items-center justify-center mr-4">
+                                        <i class="fas fa-map-marker-alt text-purple-400"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-gray-400">Location</p>
+                                        <p class="font-semibold">Jhenaidah, Bangladesh</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <form class="space-y-6">
+                                <div>
+                                    <input type="text" placeholder="Your Name" class="w-full glass border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                                </div>
+                                <div>
+                                    <input type="email" placeholder="Your Email" class="w-full glass border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                                </div>
+                                <div>
+                                    <textarea placeholder="Your Message" rows="4" class="w-full glass border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-cyan-500"></textarea>
+                                </div>
+                                <button type="submit" class="magnetic-btn w-full bg-gradient-to-r from-cyan-600 to-purple-600 py-4 rounded-lg font-semibold text-lg hover:opacity-90 transition-all">
+                                    Send Message <i class="ml-2 fas fa-paper-plane"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-8 border-t border-gray-800">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="logo text-2xl font-bold cyber-text mb-4 md:mb-0">ANTOR H GIFARI</div>
+                <div class="text-gray-400 text-center md:text-right">
+                    <p class="mb-2">© 2023 All rights reserved. Crafted with passion for innovation.</p>
+                    <p>Political Science Graduate | Tech Innovator</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Initialize GSAP
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Custom Cursor
+        const cursor = document.querySelector('.cursor');
+        const follower = document.querySelector('.cursor-follower');
+        
+        document.addEventListener('mousemove', (e) => {
+            gsap.to(cursor, {
+                x: e.clientX,
+                y: e.clientY,
+                duration: 0.1
+            });
+            
+            gsap.to(follower, {
+                x: e.clientX,
+                y: e.clientY,
+                duration: 0.3
+            });
+        });
+        
+        // Magnetic buttons
+        document.querySelectorAll('.magnetic-btn').forEach(btn => {
+            btn.addEventListener('mousemove', (e) => {
+                const rect = btn.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                const deltaX = (x - centerX) * 0.3;
+                const deltaY = (y - centerY) * 0.3;
+                
+                gsap.to(btn, {
+                    x: deltaX,
+                    y: deltaY,
+                    duration: 0.3
+                });
+            });
+            
+            btn.addEventListener('mouseleave', () => {
+                gsap.to(btn, {
+                    x: 0,
+                    y: 0,
+                    duration: 0.3
+                });
+            });
+        });
+
+        // Text animation for hero name
+        const nameText = document.getElementById('main-name');
+        const nameChars = nameText.textContent.split('');
+        nameText.textContent = '';
+        
+        nameChars.forEach((char, i) => {
+            const span = document.createElement('span');
+            span.textContent = char;
+            span.style.opacity = '0';
+            span.style.display = 'inline-block';
+            nameText.appendChild(span);
+            
+            gsap.to(span, {
+                opacity: 1,
+                duration: 0.5,
+                delay: i * 0.05,
+                ease: 'power3.out'
+            });
+        });
+
+        // Section reveal animations
+        gsap.utils.toArray('.section-reveal').forEach(section => {
+            gsap.fromTo(section, 
+                {
+                    opacity: 0,
+                    y: 50
+                },
+                {
+                    opacity: 1,
+                    y: 0,
+                    duration: 1,
+                    scrollTrigger: {
+                        trigger: section,
+                        start: 'top 80%',
+                        toggleActions: 'play none none reverse'
+                    }
+                }
+            );
+        });
+
+        // Floating skill cards animation
+        gsap.to('.skill-card', {
+            y: 10,
+            duration: 2,
+            repeat: -1,
+            yoyo: true,
+            ease: 'sine.inOut',
+            stagger: 0.5
+        });
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 50) {
+                nav.classList.add('glass');
+                nav.classList.remove('bg-transparent');
+            } else {
+                nav.classList.add('glass');
+            }
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Simple particles background
+        function createParticles() {
+            const container = document.getElementById('particles-js');
+            const particleCount = 50;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.style.position = 'absolute';
+                particle.style.width = Math.random() * 4 + 1 + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.backgroundColor = 'rgba(0, 243, 255, 0.5)';
+                particle.style.borderRadius = '50%';
+                particle.style.left = Math.random() * 100 + 'vw';
+                particle.style.top = Math.random() * 100 + 'vh';
+                container.appendChild(particle);
+                
+                // Animate particle
+                gsap.to(particle, {
+                    x: Math.random() * 100 - 50,
+                    y: Math.random() * 100 - 50,
+                    duration: Math.random() * 10 + 10,
+                    repeat: -1,
+                    yoyo: true,
+                    ease: 'sine.inOut'
+                });
+            }
+        }
+
+        // Initialize on load
+        window.addEventListener('load', () => {
+            createParticles();
+            
+            // Hero section entrance animation
+            gsap.from('#home h1', {
+                y: 100,
+                opacity: 0,
+                duration: 1.5,
+                ease: 'power4.out'
+            });
+            
+            gsap.from('#home p', {
+                y: 50,
+                opacity: 0,
+                duration: 1.2,
+                delay: 0.5,
+                ease: 'power3.out'
+            });
+            
+            gsap.from('#home .flex', {
+                y: 50,
+                opacity: 0,
+                duration: 1.2,
+                delay: 0.8,
+                ease: 'power3.out'
+            });
+        });
+    </script>
+</body>
+</html>
