@@ -1,710 +1,1146 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Antor H Gifari | Cyberpunk Portfolio</title>
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- GSAP -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root {
-            --primary: #00f3ff;
-            --secondary: #8a2be2;
-            --accent: #ff0080;
-            --dark: #0a0a0f;
-            --darker: #050508;
-            --glass: rgba(20, 20, 30, 0.7);
-        }
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="color-scheme" content="light dark" />
+<link rel="icon" href="data:," />
+<title>VoiceBarta Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Hind+Siliguri:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --bg:#f4f6f4; --surface:#ffffff; --surface-2:#eef2ee; --ink:#15211b; --ink-2:#43534a;
+  --muted:#718176; --line:#dde5dd; --accent:#0d9a66; --accent-strong:#0a7a51;
+  --accent-soft:#e2f4ec; --warn:#b97a12; --danger:#c23b3b;
+  --side:#0c1712; --side-ink:#d9e6de; --side-muted:#8ba294; --side-line:#1e2f26;
+  --shadow:0 1px 2px rgba(16,32,24,.05),0 8px 24px -12px rgba(16,32,24,.12);
+  --r-lg:16px; --r-md:12px; --r-sm:9px;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#0a0f0c; --surface:#121a15; --surface-2:#182219; --ink:#e9f1ec; --ink-2:#b9c8be;
+    --muted:#86998c; --line:#243228; --accent:#2fbd85; --accent-strong:#4fd09c;
+    --accent-soft:#153527; --warn:#e0a83e; --danger:#e06a6a;
+    --side:#070d09; --side-ink:#d9e6de; --side-muted:#7d9284; --side-line:#1a2920;
+    --shadow:0 1px 2px rgba(0,0,0,.35),0 10px 28px -14px rgba(0,0,0,.55);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="light"]{
+  --bg:#f4f6f4; --surface:#ffffff; --surface-2:#eef2ee; --ink:#15211b; --ink-2:#43534a;
+  --muted:#718176; --line:#dde5dd; --accent:#0d9a66; --accent-strong:#0a7a51;
+  --accent-soft:#e2f4ec; --warn:#b97a12; --danger:#c23b3b;
+  --side:#0c1712; --side-ink:#d9e6de; --side-muted:#8ba294; --side-line:#1e2f26;
+  --shadow:0 1px 2px rgba(16,32,24,.05),0 8px 24px -12px rgba(16,32,24,.12);
+  color-scheme:light;
+}
+:root[data-theme="dark"]{
+  --bg:#0a0f0c; --surface:#121a15; --surface-2:#182219; --ink:#e9f1ec; --ink-2:#b9c8be;
+  --muted:#86998c; --line:#243228; --accent:#2fbd85; --accent-strong:#4fd09c;
+  --accent-soft:#153527; --warn:#e0a83e; --danger:#e06a6a;
+  --side:#070d09; --side-ink:#d9e6de; --side-muted:#7d9284; --side-line:#1a2920;
+  --shadow:0 1px 2px rgba(0,0,0,.35),0 10px 28px -14px rgba(0,0,0,.55);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:"Manrope","Hind Siliguri",system-ui,sans-serif;
+  font-size:15px; line-height:1.5; -webkit-font-smoothing:antialiased;
+}
+.bn{font-family:"Hind Siliguri","Manrope",sans-serif}
+button{font:inherit;cursor:pointer}
+input,select,textarea{font:inherit;color:inherit}
+a{color:var(--accent-strong)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+/* ---------- App frame ---------- */
+.app{display:grid;grid-template-columns:248px 1fr;min-height:100vh}
+.sidebar{
+  background:var(--side); color:var(--side-ink);
+  display:flex;flex-direction:column;gap:6px;
+  padding:18px 14px; position:sticky; top:0; height:100vh; z-index:40;
+}
+.brand{display:flex;align-items:center;gap:11px;padding:2px 8px 16px;border-bottom:1px solid var(--side-line);margin-bottom:12px}
+.brand-mark{width:38px;height:38px;flex:none;border-radius:11px;background:var(--accent);display:grid;place-items:center}
+.brand-name{font-weight:800;font-size:18px;letter-spacing:-.02em;line-height:1.1;color:#fff}
+.brand-sub{font-size:11px;color:var(--side-muted);font-weight:600;letter-spacing:.04em}
+.nav-label{font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--side-muted);padding:10px 10px 5px}
+.nav-item{
+  display:flex;align-items:center;gap:11px;width:100%;text-align:left;
+  background:none;border:0;color:var(--side-ink);padding:9px 10px;border-radius:var(--r-sm);
+  font-weight:600;font-size:14px;transition:background .15s,color .15s;
+}
+.nav-item svg{flex:none;opacity:.85}
+.nav-item:hover{background:#152219}
+.nav-item.active{background:var(--accent);color:#fff}
+.nav-item.active svg{opacity:1}
+.nav-badge{margin-left:auto;background:#1d3327;color:#9fd8bd;font-size:11px;font-weight:700;padding:1px 7px;border-radius:99px}
+.nav-item.active .nav-badge{background:rgba(255,255,255,.22);color:#fff}
+.side-spacer{flex:1}
+.usage-card{background:#101f16;border:1px solid var(--side-line);border-radius:var(--r-md);padding:13px 14px;margin:8px 2px}
+.usage-card h4{margin:0 0 3px;font-size:13px;color:#fff}
+.usage-card p{margin:0 0 9px;font-size:12px;color:var(--side-muted)}
+.meter{height:6px;border-radius:99px;background:#22392b;overflow:hidden}
+.meter > i{display:block;height:100%;background:var(--accent);border-radius:99px;transition:width .4s}
+.usage-num{font-size:11.5px;color:#9fd8bd;font-weight:700;margin-top:7px;display:block}
+.user-chip{display:flex;align-items:center;gap:10px;padding:9px 8px 2px;border-top:1px solid var(--side-line);margin-top:10px}
+.avatar{width:34px;height:34px;border-radius:50%;background:var(--accent-soft);color:var(--accent-strong);display:grid;place-items:center;font-weight:800;font-size:13px;flex:none}
+.user-chip .u-name{font-weight:700;font-size:13.5px;color:#fff;line-height:1.2}
+.user-chip .u-plan{font-size:11.5px;color:var(--side-muted)}
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--darker);
-            color: #fff;
-            overflow-x: hidden;
-            cursor: none;
-        }
+.main{min-width:0;display:flex;flex-direction:column}
+.topbar{
+  position:sticky;top:0;z-index:30;background:color-mix(in srgb,var(--bg) 88%,transparent);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--line);
+  display:flex;align-items:center;gap:12px;padding:13px 26px;
+}
+.topbar h1{font-size:19px;font-weight:800;letter-spacing:-.02em;margin:0;white-space:nowrap}
+.search{flex:1;max-width:420px;margin-left:8px;position:relative}
+.search svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--muted)}
+.search input{
+  width:100%;padding:9px 12px 9px 36px;border:1px solid var(--line);border-radius:99px;
+  background:var(--surface);font-size:13.5px;
+}
+.search input::placeholder{color:var(--muted)}
+.top-actions{margin-left:auto;display:flex;align-items:center;gap:9px}
+.icon-btn{
+  width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--surface);
+  display:grid;place-items:center;color:var(--ink-2);
+}
+.icon-btn:hover{border-color:var(--accent);color:var(--accent-strong)}
+.btn{
+  border:1px solid var(--line);background:var(--surface);color:var(--ink);
+  padding:9px 16px;border-radius:99px;font-weight:700;font-size:13.5px;
+  display:inline-flex;align-items:center;gap:8px;transition:border-color .15s,background .15s;
+}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.primary:hover{background:var(--accent-strong)}
+.btn.danger-ghost{color:var(--danger)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn.sm{padding:6px 12px;font-size:12.5px}
+.menu-btn{display:none}
 
-        h1, h2, h3, h4, .logo, .cyber-text {
-            font-family: 'Orbitron', sans-serif;
-        }
+.content{padding:26px;max-width:1180px;width:100%;margin:0 auto}
+.page{display:none}
+.page.active{display:block}
+.page-head{margin-bottom:20px}
+.page-head h2{font-size:24px;font-weight:800;letter-spacing:-.02em;margin:0 0 4px}
+.page-head p{margin:0;color:var(--muted);font-size:14px;max-width:640px}
 
-        /* Custom Cursor */
-        .cursor {
-            width: 20px;
-            height: 20px;
-            border: 2px solid var(--primary);
-            border-radius: 50%;
-            position: fixed;
-            pointer-events: none;
-            z-index: 9999;
-            mix-blend-mode: difference;
-            transition: transform 0.2s;
-        }
+/* ---------- Cards & stats ---------- */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--shadow)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
+.stat{padding:18px}
+.stat .s-label{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:7px}
+.stat .s-value{font-size:30px;font-weight:800;letter-spacing:-.03em;margin-top:6px;line-height:1}
+.stat .s-note{font-size:12.5px;color:var(--muted);margin-top:6px}
+.grid-2{display:grid;grid-template-columns:1.6fr 1fr;gap:14px;align-items:start}
+.section-card{padding:20px}
+.section-card h3{margin:0 0 4px;font-size:16px;font-weight:800;letter-spacing:-.01em}
+.section-card .sub{color:var(--muted);font-size:13px;margin:0 0 14px}
+.quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.quick{
+  display:flex;gap:12px;align-items:flex-start;text-align:left;width:100%;
+  background:var(--surface-2);border:1px solid transparent;border-radius:var(--r-md);padding:14px;color:var(--ink);
+}
+.quick:hover{border-color:var(--accent)}
+.quick .q-ic{width:36px;height:36px;flex:none;border-radius:10px;background:var(--accent-soft);color:var(--accent-strong);display:grid;place-items:center}
+.quick b{display:block;font-size:14px}
+.quick span{font-size:12.5px;color:var(--muted)}
 
-        .cursor-follower {
-            width: 8px;
-            height: 8px;
-            background-color: var(--primary);
-            border-radius: 50%;
-            position: fixed;
-            pointer-events: none;
-            z-index: 9998;
-            transition: transform 0.4s;
-        }
+/* ---------- Lists ---------- */
+.list{display:flex;flex-direction:column}
+.list-row{display:flex;align-items:center;gap:13px;padding:12px 4px;border-bottom:1px solid var(--line)}
+.list-row:last-child{border-bottom:0}
+.play-dot{
+  width:36px;height:36px;flex:none;border-radius:50%;border:1px solid var(--line);
+  background:var(--surface);color:var(--accent-strong);display:grid;place-items:center;
+}
+.play-dot:hover{background:var(--accent);border-color:var(--accent);color:#fff}
+.list-row .r-main{min-width:0;flex:1}
+.list-row .r-text{font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.list-row .r-meta{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row-actions{display:flex;gap:4px;flex:none}
+.mini-btn{border:0;background:none;color:var(--muted);padding:7px;border-radius:8px;display:grid;place-items:center}
+.mini-btn:hover{background:var(--surface-2);color:var(--ink)}
+.mini-btn.danger:hover{color:var(--danger)}
+.empty{padding:30px 16px;text-align:center;color:var(--muted);font-size:13.5px}
+.empty b{color:var(--ink-2);display:block;font-size:14.5px;margin-bottom:4px}
+.tag{display:inline-flex;align-items:center;gap:5px;background:var(--surface-2);border:1px solid var(--line);color:var(--ink-2);font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px}
+.tag.green{background:var(--accent-soft);border-color:transparent;color:var(--accent-strong)}
 
-        /* Glassmorphism */
-        .glass {
-            background: var(--glass);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-        }
+/* ---------- Studio ---------- */
+.studio{display:grid;grid-template-columns:1.65fr 1fr;gap:14px;align-items:start}
+.editor{padding:20px}
+.editor textarea{
+  width:100%;min-height:220px;resize:vertical;border:0;background:transparent;
+  font-size:16.5px;line-height:1.65;color:var(--ink);padding:2px;
+}
+.editor textarea:focus{outline:none}
+.editor textarea::placeholder{color:var(--muted)}
+.editor-foot{display:flex;align-items:center;gap:10px;border-top:1px solid var(--line);padding-top:14px;margin-top:10px;flex-wrap:wrap}
+.char-count{font-size:12.5px;color:var(--muted);font-weight:600}
+.char-count.over{color:var(--danger)}
+.samples{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.sample-chip{
+  border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:6px 13px;
+  font-size:12.5px;font-weight:600;color:var(--ink-2);
+}
+.sample-chip:hover{border-color:var(--accent);color:var(--accent-strong)}
+.panel{padding:20px}
+.panel h3{margin:0 0 14px;font-size:15px;font-weight:800}
+.field{margin-bottom:16px}
+.field label{display:flex;justify-content:space-between;font-size:12.5px;font-weight:700;color:var(--ink-2);margin-bottom:7px}
+.field label output{color:var(--accent-strong);font-weight:800}
+.field select{
+  width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:var(--r-sm);
+  background:var(--surface);font-size:14px;font-weight:600;
+}
+.voice-note{margin:9px 0 0;font-size:12.5px;line-height:1.55;color:var(--ink-2);background:var(--accent-soft);border-radius:var(--r-sm);padding:9px 11px}
+.voice-note b{color:var(--accent-strong)}
+input[type="range"]{width:100%;accent-color:var(--accent);height:26px}
+.wave{display:flex;align-items:flex-end;gap:3px;height:44px;padding:10px 2px 2px}
+.wave i{flex:1;background:var(--line);border-radius:3px;height:22%;min-height:4px;transition:height .2s}
+.wave.playing i{background:var(--accent);animation:eq 0.9s ease-in-out infinite alternate}
+.wave.playing i:nth-child(3n){animation-delay:.15s}.wave.playing i:nth-child(4n){animation-delay:.3s}
+.wave.playing i:nth-child(5n){animation-delay:.45s}.wave.playing i:nth-child(7n){animation-delay:.6s}
+@keyframes eq{from{height:14%}to{height:96%}}
+@media (prefers-reduced-motion:reduce){.wave.playing i{animation:none}}
+.status-line{font-size:12.5px;color:var(--muted);min-height:18px;margin-top:6px}
+.status-line b{color:var(--accent-strong)}
+.gen-row{display:flex;gap:9px;margin-top:14px}
+.gen-row .btn{flex:1;justify-content:center;padding:12px}
+.save-row{display:flex;gap:8px;margin-top:10px}
+.save-row select{flex:1;padding:9px 10px;border:1px solid var(--line);border-radius:var(--r-sm);background:var(--surface);font-size:13px;font-weight:600;min-width:0}
 
-        /* Cyberpunk Text Effect */
-        .cyber-text {
-            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            text-shadow: 0 0 15px rgba(0, 243, 255, 0.5);
-        }
+/* ---------- Voice library ---------- */
+.filter-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.filter-chip{border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:7px 15px;font-size:13px;font-weight:700;color:var(--ink-2)}
+.filter-chip.active{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.voice-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:13px}
+.voice-card{padding:17px;display:flex;flex-direction:column;gap:11px}
+.voice-top{display:flex;align-items:center;gap:12px}
+.voice-face{width:44px;height:44px;border-radius:13px;display:grid;place-items:center;font-weight:800;font-size:15px;color:#fff;flex:none}
+.voice-name{font-weight:800;font-size:15px;line-height:1.25;word-break:break-word}
+.voice-lang{font-size:12px;color:var(--muted);font-weight:600}
+.voice-tags{display:flex;gap:6px;flex-wrap:wrap}
+.voice-actions{display:flex;gap:8px;margin-top:auto}
+.voice-actions .btn{flex:1;justify-content:center}
 
-        /* Section Spacing */
-        section {
-            padding: 6rem 2rem;
-            position: relative;
-        }
+/* ---------- Projects ---------- */
+.create-row{display:flex;gap:9px;margin-bottom:16px;flex-wrap:wrap}
+.create-row input{
+  flex:1;min-width:200px;padding:11px 14px;border:1px solid var(--line);border-radius:99px;background:var(--surface);font-size:14px;
+}
+.project-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:13px}
+.project-card{padding:18px}
+.project-card h4{margin:0 0 3px;font-size:15.5px;font-weight:800;display:flex;align-items:center;gap:8px}
+.project-card .p-meta{font-size:12.5px;color:var(--muted);margin-bottom:10px}
+.project-items{border-top:1px solid var(--line);margin-top:6px}
+.project-items .list-row{padding:9px 0}
 
-        /* Section Reveal Animation */
-        .section-reveal {
-            opacity: 0;
-            transform: translateY(50px);
-        }
+/* ---------- Settings ---------- */
+.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+.seg{display:flex;background:var(--surface-2);border:1px solid var(--line);border-radius:99px;padding:3px;gap:3px}
+.seg button{flex:1;border:0;background:none;padding:7px 10px;border-radius:99px;font-weight:700;font-size:13px;color:var(--ink-2)}
+.seg button.active{background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
 
-        /* Magnetic Button */
-        .magnetic-btn {
-            position: relative;
-            overflow: hidden;
-            transition: transform 0.3s;
-        }
+/* ---------- Toast ---------- */
+.toast{
+  position:fixed;left:50%;bottom:26px;transform:translate(-50%,20px);z-index:80;
+  background:var(--ink);color:var(--bg);padding:11px 18px;border-radius:99px;font-size:13.5px;font-weight:700;
+  opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;max-width:92vw;text-align:center;
+}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.scrim{display:none}
 
-        .magnetic-btn:hover {
-            transform: scale(1.05);
-        }
-
-        /* Skill Card Hover Effect */
-        .skill-card {
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            transform-style: preserve-3d;
-        }
-
-        .skill-card:hover {
-            transform: translateY(-10px) rotateX(5deg);
-            box-shadow: 0 20px 40px rgba(0, 243, 255, 0.2);
-        }
-
-        /* Project Gallery Hover Effect */
-        .project-item {
-            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .project-item:hover {
-            transform: scale(1.05) rotateY(5deg);
-            z-index: 10;
-        }
-
-        /* Particle Background */
-        #particles-js {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            z-index: -1;
-        }
-
-        /* Glowing Border */
-        .glow-border {
-            position: relative;
-            border-radius: 10px;
-        }
-
-        .glow-border::before {
-            content: '';
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            background: linear-gradient(45deg, var(--primary), var(--secondary), var(--accent), var(--primary));
-            border-radius: 12px;
-            z-index: -1;
-            opacity: 0;
-            transition: opacity 0.5s;
-        }
-
-        .glow-border:hover::before {
-            opacity: 1;
-            animation: glow 2s linear infinite;
-        }
-
-        @keyframes glow {
-            0% { filter: hue-rotate(0deg); }
-            100% { filter: hue-rotate(360deg); }
-        }
-
-        /* Responsive Adjustments */
-        @media (max-width: 768px) {
-            section {
-                padding: 4rem 1rem;
-            }
-            
-            .cursor, .cursor-follower {
-                display: none;
-            }
-            
-            body {
-                cursor: auto;
-            }
-        }
-    </style>
+/* ---------- Responsive ---------- */
+@media (max-width:1020px){
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .studio,.grid-2,.settings-grid{grid-template-columns:1fr}
+}
+@media (max-width:860px){
+  .app{grid-template-columns:1fr}
+  .sidebar{
+    display:none;
+    position:fixed;left:0;top:0;width:264px;
+    box-shadow:0 0 60px rgba(0,0,0,.35);
+  }
+  .sidebar.open{display:flex;animation:slide-in .25s ease}
+  @keyframes slide-in{from{transform:translateX(-100%)}to{transform:none}}
+  .scrim{display:block;position:fixed;inset:0;background:rgba(5,10,7,.5);z-index:35;opacity:0;pointer-events:none;transition:opacity .25s}
+  .scrim.show{opacity:1;pointer-events:auto}
+  .menu-btn{display:grid}
+  .topbar{padding:12px 16px}
+  .topbar h1{font-size:17px}
+  .search{display:none}
+  .content{padding:18px 16px 40px}
+  .btn .btn-label{display:none}
+  .top-actions .btn.primary{padding:9px 13px}
+}
+@media (max-width:520px){
+  .stats{grid-template-columns:1fr 1fr}
+  .stat .s-value{font-size:24px}
+  .quick-grid{grid-template-columns:1fr}
+  .editor textarea{min-height:170px}
+}
+</style>
 </head>
 <body>
-    <!-- Custom Cursor -->
-    <div class="cursor"></div>
-    <div class="cursor-follower"></div>
+<div class="app">
 
-    <!-- Navigation -->
-    <nav class="glass fixed w-full z-50 py-4 px-8">
-        <div class="container mx-auto flex justify-between items-center">
-            <div class="logo text-2xl font-bold cyber-text">AHG</div>
-            <div class="hidden md:flex space-x-8">
-                <a href="#home" class="text-gray-300 hover:text-white hover:cyber-text transition-all duration-300">Home</a>
-                <a href="#about" class="text-gray-300 hover:text-white hover:cyber-text transition-all duration-300">About</a>
-                <a href="#skills" class="text-gray-300 hover:text-white hover:cyber-text transition-all duration-300">Skills</a>
-                <a href="#projects" class="text-gray-300 hover:text-white hover:cyber-text transition-all duration-300">Projects</a>
-                <a href="#contact" class="text-gray-300 hover:text-white hover:cyber-text transition-all duration-300">Contact</a>
-            </div>
-            <div class="md:hidden text-2xl">
-                <i class="fas fa-bars"></i>
-            </div>
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="sidebar" id="sidebar" aria-label="Main navigation">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="3" y="9" width="3" height="6" rx="1.5" fill="#fff"/><rect x="8" y="5" width="3" height="14" rx="1.5" fill="#fff"/><rect x="13" y="8" width="3" height="8" rx="1.5" fill="#fff"/><rect x="18" y="11" width="3" height="2.5" rx="1.25" fill="#fff" opacity=".65"/></svg>
+      </div>
+      <div>
+        <div class="brand-name">VoiceBarta</div>
+        <div class="brand-sub">VOICE STUDIO</div>
+      </div>
+    </div>
+
+    <div class="nav-label">Create</div>
+    <button class="nav-item active" data-page="home">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>
+      Home
+    </button>
+    <button class="nav-item" data-page="studio">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1"/><path d="M12 18v4"/></svg>
+      Text to Speech
+    </button>
+    <button class="nav-item" data-page="voices">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 10v4"/><path d="M8 7v10"/><path d="M12 4v16"/><path d="M16 8v8"/><path d="M20 11v2"/></svg>
+      Voice Library
+      <span class="nav-badge" id="voiceCountBadge">0</span>
+    </button>
+
+    <div class="nav-label">Organize</div>
+    <button class="nav-item" data-page="projects">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/></svg>
+      Projects
+      <span class="nav-badge" id="projectCountBadge">0</span>
+    </button>
+    <button class="nav-item" data-page="history">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l3 3"/></svg>
+      History
+      <span class="nav-badge" id="historyCountBadge">0</span>
+    </button>
+    <button class="nav-item" data-page="settings">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1 1.55V21a2 2 0 1 1-4 0v-.09a1.7 1.7 0 0 0-1-1.55 1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-1.55-1H3a2 2 0 1 1 0-4h.09A1.7 1.7 0 0 0 4.64 9a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-1.55V3a2 2 0 1 1 4 0v.09a1.7 1.7 0 0 0 1 1.51 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.7 1.7 0 0 0-.34 1.87v.05a1.7 1.7 0 0 0 1.55 1H21a2 2 0 1 1 0 4h-.09a1.7 1.7 0 0 0-1.51 1Z"/></svg>
+      Settings
+    </button>
+
+    <div class="side-spacer"></div>
+
+    <div class="usage-card">
+      <h4>Free plan</h4>
+      <p>Characters generated this session</p>
+      <div class="meter"><i id="usageMeter" style="width:0%"></i></div>
+      <span class="usage-num" id="usageNum">0 / 10,000 characters</span>
+    </div>
+
+    <div class="user-chip">
+      <div class="avatar">A</div>
+      <div>
+        <div class="u-name">Antor</div>
+        <div class="u-plan">Personal workspace</div>
+      </div>
+    </div>
+  </aside>
+  <div class="scrim" id="scrim"></div>
+
+  <!-- ============ MAIN ============ -->
+  <div class="main">
+    <header class="topbar">
+      <button class="icon-btn menu-btn" id="menuBtn" aria-label="Open menu">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+      <h1 id="pageTitle">Home</h1>
+      <div class="search">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input id="searchInput" type="search" placeholder="Search voices and history…" aria-label="Search voices and history" />
+      </div>
+      <div class="top-actions">
+        <button class="icon-btn" id="themeBtn" aria-label="Toggle light and dark theme">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8Z"/></svg>
+        </button>
+        <button class="btn primary" id="newSpeechBtn">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+          <span class="btn-label">New speech</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="content">
+
+      <!-- ===== HOME ===== -->
+      <section class="page active" id="page-home">
+        <div class="page-head">
+          <h2>Welcome back, Antor</h2>
+          <p>Create natural speech from text, browse the voices on your device, and keep your work organized in projects.</p>
         </div>
-    </nav>
 
-    <!-- Hero Section -->
-    <section id="home" class="min-h-screen flex items-center relative overflow-hidden">
-        <div id="particles-js"></div>
-        <div class="container mx-auto px-4 z-10">
-            <div class="max-w-4xl mx-auto text-center">
-                <h1 class="text-5xl md:text-7xl lg:text-8xl font-bold mb-6">
-                    <span class="cyber-text" id="main-name">Antor H Gifari</span>
-                </h1>
-                <p class="text-xl md:text-2xl text-gray-300 mb-10 max-w-2xl mx-auto">
-                    Where <span class="text-red-400 font-semibold">Political Science</span> meets 
-                    <span class="cyber-text font-semibold">Cutting-Edge Technology</span>
-                </p>
-                <div class="flex flex-wrap justify-center gap-6">
-                    <a href="#about" class="magnetic-btn glass px-8 py-4 rounded-full font-semibold text-lg cyber-text">
-                        Explore My Journey <i class="ml-2 fas fa-arrow-down"></i>
-                    </a>
-                    <a href="#projects" class="magnetic-btn border-2 border-cyan-500 px-8 py-4 rounded-full font-semibold text-lg hover:bg-cyan-500/10 transition-all">
-                        View Projects <i class="ml-2 fas fa-code"></i>
-                    </a>
-                </div>
-            </div>
+        <div class="stats">
+          <div class="card stat">
+            <div class="s-label">Generations</div>
+            <div class="s-value" id="statGen">0</div>
+            <div class="s-note">Speeches created this session</div>
+          </div>
+          <div class="card stat">
+            <div class="s-label">Characters used</div>
+            <div class="s-value" id="statChars">0</div>
+            <div class="s-note">Of 10,000 free characters</div>
+          </div>
+          <div class="card stat">
+            <div class="s-label">Voices available</div>
+            <div class="s-value" id="statVoices">0</div>
+            <div class="s-note">Loaded from your device &amp; browser</div>
+          </div>
+          <div class="card stat">
+            <div class="s-label">Projects</div>
+            <div class="s-value" id="statProjects">0</div>
+            <div class="s-note">Collections of saved clips</div>
+          </div>
         </div>
-        <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2">
-            <div class="animate-bounce text-cyan-400">
-                <i class="fas fa-chevron-down text-3xl"></i>
+
+        <div class="grid-2">
+          <div class="card section-card">
+            <h3>Recent generations</h3>
+            <p class="sub">Your latest text-to-speech clips appear here.</p>
+            <div class="list" id="recentList"></div>
+          </div>
+          <div class="card section-card">
+            <h3>Quick start</h3>
+            <p class="sub">Jump straight into creating.</p>
+            <div class="quick-grid">
+              <button class="quick" data-goto="studio">
+                <span class="q-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1"/><path d="M12 18v4"/></svg></span>
+                <span><b>Text to Speech</b><span>Type or paste text and hear it spoken aloud.</span></span>
+              </button>
+              <button class="quick" data-goto="voices">
+                <span class="q-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 10v4"/><path d="M8 7v10"/><path d="M12 4v16"/><path d="M16 8v8"/><path d="M20 11v2"/></svg></span>
+                <span><b>Voice Library</b><span>Preview every voice and pick your favourite.</span></span>
+              </button>
+              <button class="quick" data-goto="projects">
+                <span class="q-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/></svg></span>
+                <span><b>New Project</b><span>Group clips for a video, story, or lesson.</span></span>
+              </button>
+              <button class="quick" data-goto="history">
+                <span class="q-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l3 3"/></svg></span>
+                <span><b>History</b><span>Replay anything you generated earlier.</span></span>
+              </button>
             </div>
+          </div>
         </div>
-    </section>
+      </section>
 
-    <!-- About Section -->
-    <section id="about" class="section-reveal">
-        <div class="container mx-auto px-4">
-            <h2 class="text-4xl md:text-5xl font-bold text-center mb-16 cyber-text">About Me</h2>
-            <div class="glass rounded-2xl p-8 md:p-12 max-w-6xl mx-auto">
-                <div class="grid md:grid-cols-2 gap-12 items-center">
-                    <div class="space-y-6">
-                        <h3 class="text-3xl font-bold mb-4">The Unconventional Path</h3>
-                        <div class="space-y-4">
-                            <div class="p-4 bg-gradient-to-r from-purple-900/30 to-cyan-900/30 rounded-xl border-l-4 border-purple-500">
-                                <h4 class="text-xl font-semibold mb-2">🎓 Formal Education</h4>
-                                <p class="text-gray-300">Department of Political Science</p>
-                                <p class="text-cyan-300">Govt. Keshab Chandra College, Jhenaidah</p>
-                            </div>
-                            <div class="p-4 bg-gradient-to-r from-cyan-900/30 to-pink-900/30 rounded-xl border-l-4 border-cyan-500">
-                                <h4 class="text-xl font-semibold mb-2">💻 Passion & Expertise</h4>
-                                <p class="text-gray-300">Self-taught technologist specializing in cutting-edge fields at the intersection of hardware and software.</p>
-                            </div>
-                        </div>
-                        <p class="text-gray-300 leading-relaxed">
-                            My journey from political theory to technological innovation has given me a unique perspective on problem-solving. 
-                            I approach tech challenges with the analytical rigor of a social scientist and the creativity of an engineer.
-                        </p>
-                    </div>
-                    <div class="relative">
-                        <div class="glow-border glass p-2 rounded-xl">
-                            <div class="bg-gradient-to-br from-gray-900 to-black p-6 rounded-lg">
-                                <div class="grid grid-cols-2 gap-4">
-                                    <div class="text-center p-4 rounded-lg bg-gray-800/50">
-                                        <i class="fas fa-university text-4xl text-purple-500 mb-3"></i>
-                                        <h4 class="font-bold">Political Analysis</h4>
-                                        <p class="text-sm text-gray-400 mt-2">Systems thinking & critical analysis</p>
-                                    </div>
-                                    <div class="text-center p-4 rounded-lg bg-gray-800/50">
-                                        <i class="fas fa-robot text-4xl text-cyan-500 mb-3"></i>
-                                        <h4 class="font-bold">Robotics</h4>
-                                        <p class="text-sm text-gray-400 mt-2">Embedded systems & automation</p>
-                                    </div>
-                                    <div class="text-center p-4 rounded-lg bg-gray-800/50">
-                                        <i class="fas fa-gamepad text-4xl text-green-500 mb-3"></i>
-                                        <h4 class="font-bold">Game Dev</h4>
-                                        <p class="text-sm text-gray-400 mt-2">Immersive experiences & simulation</p>
-                                    </div>
-                                    <div class="text-center p-4 rounded-lg bg-gray-800/50">
-                                        <i class="fas fa-brain text-4xl text-pink-500 mb-3"></i>
-                                        <h4 class="font-bold">AI/ML</h4>
-                                        <p class="text-sm text-gray-400 mt-2">Deep learning & computer vision</p>
-                                    </div>
-                                </div>
-                                <div class="mt-6 pt-6 border-t border-gray-700">
-                                    <p class="text-center italic text-gray-400">
-                                        "Bridging the gap between humanities and technology to create innovative solutions"
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+      <!-- ===== STUDIO ===== -->
+      <section class="page" id="page-studio">
+        <div class="page-head">
+          <h2>Text to Speech</h2>
+          <p>Write in English, Bengali, or any language your selected voice supports, then generate speech instantly on your device.</p>
         </div>
-    </section>
 
-    <!-- Skills & Software Section -->
-    <section id="skills" class="section-reveal bg-gradient-to-b from-darker to-gray-900/30">
-        <div class="container mx-auto px-4">
-            <h2 class="text-4xl md:text-5xl font-bold text-center mb-16 cyber-text">Skills & Expertise</h2>
-            
-            <!-- Skills Cloud -->
-            <div class="max-w-6xl mx-auto mb-20">
-                <div class="relative h-80 md:h-96">
-                    <!-- Floating skill elements -->
-                    <div class="skill-card glass absolute top-1/4 left-1/4 p-6 rounded-2xl w-48 transform -rotate-6">
-                        <div class="text-center">
-                            <i class="fas fa-robot text-5xl text-cyan-400 mb-4"></i>
-                            <h3 class="text-xl font-bold mb-2">Robotics</h3>
-                            <p class="text-gray-400 text-sm">Embedded Systems, Automation, IoT</p>
-                        </div>
-                    </div>
-                    
-                    <div class="skill-card glass absolute top-1/3 right-1/4 p-6 rounded-2xl w-48 transform rotate-6">
-                        <div class="text-center">
-                            <i class="fas fa-gamepad text-5xl text-green-400 mb-4"></i>
-                            <h3 class="text-xl font-bold mb-2">Game Development</h3>
-                            <p class="text-gray-400 text-sm">Unity Engine, 3D Modeling, VR</p>
-                        </div>
-                    </div>
-                    
-                    <div class="skill-card glass absolute bottom-1/4 left-1/3 p-6 rounded-2xl w-48">
-                        <div class="text-center">
-                            <i class="fas fa-eye text-5xl text-purple-400 mb-4"></i>
-                            <h3 class="text-xl font-bold mb-2">Computer Vision</h3>
-                            <p class="text-gray-400 text-sm">YOLO v8, Object Detection</p>
-                        </div>
-                    </div>
-                    
-                    <div class="skill-card glass absolute bottom-1/3 right-1/3 p-6 rounded-2xl w-48 transform -rotate-3">
-                        <div class="text-center">
-                            <i class="fas fa-brain text-5xl text-pink-400 mb-4"></i>
-                            <h3 class="text-xl font-bold mb-2">Deep Learning</h3>
-                            <p class="text-gray-400 text-sm">Neural Networks, AI Models</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Software Expertise -->
-            <div class="max-w-5xl mx-auto">
-                <h3 class="text-3xl font-bold text-center mb-12 cyber-text">Software Mastery</h3>
-                <div class="grid md:grid-cols-3 gap-8">
-                    <div class="glass rounded-xl p-8 text-center transform hover:scale-105 transition-all duration-300">
-                        <div class="mb-6">
-                            <i class="fab fa-unity text-6xl text-white"></i>
-                        </div>
-                        <h4 class="text-2xl font-bold mb-3">Unity Engine</h4>
-                        <p class="text-gray-400">Professional game development, 3D simulation, and interactive experiences.</p>
-                        <div class="mt-6 h-2 bg-gray-800 rounded-full overflow-hidden">
-                            <div class="h-full bg-green-500 rounded-full" style="width: 95%"></div>
-                        </div>
-                    </div>
-                    
-                    <div class="glass rounded-xl p-8 text-center transform hover:scale-105 transition-all duration-300">
-                        <div class="mb-6">
-                            <i class="fas fa-cube text-6xl text-cyan-400"></i>
-                        </div>
-                        <h4 class="text-2xl font-bold mb-3">Fusion 360</h4>
-                        <p class="text-gray-400">CAD modeling, mechanical design, and prototyping for robotics.</p>
-                        <div class="mt-6 h-2 bg-gray-800 rounded-full overflow-hidden">
-                            <div class="h-full bg-cyan-500 rounded-full" style="width: 90%"></div>
-                        </div>
-                    </div>
-                    
-                    <div class="glass rounded-xl p-8 text-center transform hover:scale-105 transition-all duration-300">
-                        <div class="mb-6">
-                            <div class="text-5xl font-bold bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">YOLO</div>
-                            <p class="text-sm text-gray-500 mt-1">v8</p>
-                        </div>
-                        <h4 class="text-2xl font-bold mb-3">Computer Vision</h4>
-                        <p class="text-gray-400">Real-time object detection, tracking, and image analysis.</p>
-                        <div class="mt-6 h-2 bg-gray-800 rounded-full overflow-hidden">
-                            <div class="h-full bg-purple-500 rounded-full" style="width: 88%"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="samples" id="sampleRow">
+          <button class="sample-chip" data-sample="bn-greet">🇧🇩 Bengali greeting</button>
+          <button class="sample-chip" data-sample="bn-story">Bengali story line</button>
+          <button class="sample-chip" data-sample="en-welcome">English welcome</button>
+          <button class="sample-chip" data-sample="en-news">News read</button>
         </div>
-    </section>
 
-    <!-- Project Gallery -->
-    <section id="projects" class="section-reveal">
-        <div class="container mx-auto px-4">
-            <h2 class="text-4xl md:text-5xl font-bold text-center mb-16 cyber-text">Project Gallery</h2>
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
-                <!-- Project 1 -->
-                <div class="project-item glass rounded-2xl overflow-hidden">
-                    <div class="relative overflow-hidden h-56">
-                        <div class="absolute inset-0 bg-gradient-to-br from-cyan-900/40 to-purple-900/40 flex items-center justify-center">
-                            <i class="fas fa-robot text-7xl text-cyan-400"></i>
-                        </div>
-                    </div>
-                    <div class="p-6">
-                        <h3 class="text-2xl font-bold mb-3">Autonomous Drone System</h3>
-                        <p class="text-gray-400 mb-4">AI-powered drone with computer vision for object tracking and autonomous navigation.</p>
-                        <div class="flex flex-wrap gap-2">
-                            <span class="px-3 py-1 bg-cyan-900/50 text-cyan-300 rounded-full text-sm">Robotics</span>
-                            <span class="px-3 py-1 bg-purple-900/50 text-purple-300 rounded-full text-sm">Computer Vision</span>
-                            <span class="px-3 py-1 bg-green-900/50 text-green-300 rounded-full text-sm">AI</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Project 2 -->
-                <div class="project-item glass rounded-2xl overflow-hidden">
-                    <div class="relative overflow-hidden h-56">
-                        <div class="absolute inset-0 bg-gradient-to-br from-green-900/40 to-blue-900/40 flex items-center justify-center">
-                            <i class="fab fa-unity text-7xl text-white"></i>
-                        </div>
-                    </div>
-                    <div class="p-6">
-                        <h3 class="text-2xl font-bold mb-3">Cyberpunk VR Experience</h3>
-                        <p class="text-gray-400 mb-4">Immersive virtual reality game set in a futuristic city with interactive NPCs.</p>
-                        <div class="flex flex-wrap gap-2">
-                            <span class="px-3 py-1 bg-green-900/50 text-green-300 rounded-full text-sm">Unity</span>
-                            <span class="px-3 py-1 bg-blue-900/50 text-blue-300 rounded-full text-sm">VR</span>
-                            <span class="px-3 py-1 bg-pink-900/50 text-pink-300 rounded-full text-sm">3D Modeling</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Project 3 -->
-                <div class="project-item glass rounded-2xl overflow-hidden">
-                    <div class="relative overflow-hidden h-56">
-                        <div class="absolute inset-0 bg-gradient-to-br from-purple-900/40 to-pink-900/40 flex items-center justify-center">
-                            <i class="fas fa-brain text-7xl text-pink-400"></i>
-                        </div>
-                    </div>
-                    <div class="p-6">
-                        <h3 class="text-2xl font-bold mb-3">Real-time Object Detection</h3>
-                        <p class="text-gray-400 mb-4">YOLO v8 implementation for real-time object detection with 95%+ accuracy.</p>
-                        <div class="flex flex-wrap gap-2">
-                            <span class="px-3 py-1 bg-purple-900/50 text-purple-300 rounded-full text-sm">YOLO v8</span>
-                            <span class="px-3 py-1 bg-red-900/50 text-red-300 rounded-full text-sm">Deep Learning</span>
-                            <span class="px-3 py-1 bg-cyan-900/50 text-cyan-300 rounded-full text-sm">Python</span>
-                        </div>
-                    </div>
-                </div>
+        <div class="studio">
+          <div class="card editor">
+            <textarea id="ttsText" maxlength="5000" placeholder="Type or paste your text here…">স্বাগতম VoiceBarta-তে! এখানে লিখলেই আপনার লেখা কণ্ঠে শোনা যাবে।</textarea>
+            <div class="wave" id="wave" aria-hidden="true"></div>
+            <div class="status-line" id="statusLine">Ready when you are.</div>
+            <div class="editor-foot">
+              <span class="char-count" id="charCount">0 / 5,000</span>
+              <span class="tag" id="estTime">≈ 0 sec of speech</span>
+              <span style="flex:1"></span>
+              <button class="btn sm" id="clearTextBtn">Clear</button>
+              <button class="btn sm" id="pasteBtn">Paste</button>
             </div>
-            
-            <div class="text-center mt-16">
-                <a href="#" class="magnetic-btn glass px-8 py-4 rounded-full font-semibold text-lg cyber-text inline-flex items-center">
-                    View All Projects <i class="ml-3 fas fa-external-link-alt"></i>
-                </a>
+            <div class="gen-row">
+              <button class="btn" id="stopBtn" disabled>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
+                Stop
+              </button>
+              <button class="btn primary" id="generateBtn">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.8v14.4c0 .9 1 1.5 1.8 1L20 13a1.2 1.2 0 0 0 0-2L8.8 3.9C8 3.4 7 4 7 4.8Z"/></svg>
+                Generate speech
+              </button>
             </div>
+            <div class="save-row">
+              <select id="saveProjectSelect" aria-label="Project to save into"></select>
+              <button class="btn sm" id="saveToProjectBtn">Save text to project</button>
+            </div>
+          </div>
+
+          <div class="card panel">
+            <h3>Voice settings</h3>
+            <div class="field">
+              <label for="voiceSelect">Voice</label>
+              <select id="voiceSelect"></select>
+              <p class="voice-note" id="sweetNote" hidden></p>
+            </div>
+            <div class="field">
+              <label>Speed <output id="rateOut">1.00×</output></label>
+              <input type="range" id="rateRange" min="0.5" max="2" step="0.05" value="1" />
+            </div>
+            <div class="field">
+              <label>Pitch <output id="pitchOut">1.00</output></label>
+              <input type="range" id="pitchRange" min="0" max="2" step="0.05" value="1" />
+            </div>
+            <div class="field" style="margin-bottom:4px">
+              <label>Volume <output id="volOut">100%</output></label>
+              <input type="range" id="volRange" min="0" max="1" step="0.05" value="1" />
+            </div>
+            <div class="field" style="margin-bottom:0">
+              <label>Preview line</label>
+              <button class="btn sm" id="previewBtn" style="width:100%;justify-content:center">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.8v14.4c0 .9 1 1.5 1.8 1L20 13a1.2 1.2 0 0 0 0-2L8.8 3.9C8 3.4 7 4 7 4.8Z"/></svg>
+                Preview selected voice
+              </button>
+            </div>
+          </div>
         </div>
-    </section>
+      </section>
 
-    <!-- Contact Section -->
-    <section id="contact" class="section-reveal">
-        <div class="container mx-auto px-4">
-            <h2 class="text-4xl md:text-5xl font-bold text-center mb-16 cyber-text">Get In Touch</h2>
-            <div class="max-w-4xl mx-auto">
-                <div class="glass rounded-2xl p-8 md:p-12">
-                    <div class="grid md:grid-cols-2 gap-12">
-                        <div>
-                            <h3 class="text-3xl font-bold mb-6">Let's Connect</h3>
-                            <p class="text-gray-300 mb-8">
-                                Interested in collaborating on cutting-edge tech projects? 
-                                Whether it's robotics, game development, or AI, I'm always open to discussing innovative ideas.
-                            </p>
-                            <div class="space-y-6">
-                                <div class="flex items-center">
-                                    <div class="w-12 h-12 rounded-full bg-cyan-900/30 flex items-center justify-center mr-4">
-                                        <i class="fas fa-envelope text-cyan-400"></i>
-                                    </div>
-                                    <div>
-                                        <p class="text-gray-400">Email</p>
-                                        <p class="font-semibold">contact@antorgifari.dev</p>
-                                    </div>
-                                </div>
-                                <div class="flex items-center">
-                                    <div class="w-12 h-12 rounded-full bg-purple-900/30 flex items-center justify-center mr-4">
-                                        <i class="fas fa-map-marker-alt text-purple-400"></i>
-                                    </div>
-                                    <div>
-                                        <p class="text-gray-400">Location</p>
-                                        <p class="font-semibold">Jhenaidah, Bangladesh</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div>
-                            <form class="space-y-6">
-                                <div>
-                                    <input type="text" placeholder="Your Name" class="w-full glass border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-cyan-500">
-                                </div>
-                                <div>
-                                    <input type="email" placeholder="Your Email" class="w-full glass border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-cyan-500">
-                                </div>
-                                <div>
-                                    <textarea placeholder="Your Message" rows="4" class="w-full glass border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-cyan-500"></textarea>
-                                </div>
-                                <button type="submit" class="magnetic-btn w-full bg-gradient-to-r from-cyan-600 to-purple-600 py-4 rounded-lg font-semibold text-lg hover:opacity-90 transition-all">
-                                    Send Message <i class="ml-2 fas fa-paper-plane"></i>
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
+      <!-- ===== VOICES ===== -->
+      <section class="page" id="page-voices">
+        <div class="page-head">
+          <h2>Voice Library</h2>
+          <p>Every voice installed on your device or provided by your browser, ready to preview and use. Add more voices anytime from your device's text-to-speech settings.</p>
         </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="py-8 border-t border-gray-800">
-        <div class="container mx-auto px-4">
-            <div class="flex flex-col md:flex-row justify-between items-center">
-                <div class="logo text-2xl font-bold cyber-text mb-4 md:mb-0">ANTOR H GIFARI</div>
-                <div class="text-gray-400 text-center md:text-right">
-                    <p class="mb-2">© 2023 All rights reserved. Crafted with passion for innovation.</p>
-                    <p>Political Science Graduate | Tech Innovator</p>
-                </div>
-            </div>
+        <div class="filter-row" id="langFilters"></div>
+        <div class="voice-grid" id="voiceGrid"></div>
+        <div class="empty" id="voiceEmpty" style="display:none">
+          <b>No voices found</b>
+          Your browser hasn't shared any speech voices yet. Try reloading, or check your device's text-to-speech settings.
         </div>
-    </footer>
+      </section>
 
-    <!-- JavaScript -->
-    <script>
-        // Initialize GSAP
-        gsap.registerPlugin(ScrollTrigger);
+      <!-- ===== PROJECTS ===== -->
+      <section class="page" id="page-projects">
+        <div class="page-head">
+          <h2>Projects</h2>
+          <p>Group related clips together — a video series, an audiobook, a set of lessons. Save texts into a project from the studio.</p>
+        </div>
+        <div class="create-row">
+          <input id="projectNameInput" type="text" placeholder="New project name — e.g. Mukta story narration" maxlength="60" />
+          <button class="btn primary" id="createProjectBtn">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+            Create project
+          </button>
+        </div>
+        <div class="project-grid" id="projectGrid"></div>
+        <div class="empty" id="projectEmpty">
+          <b>No projects yet</b>
+          Create your first project above, then save texts into it from the Text to Speech studio.
+        </div>
+      </section>
 
-        // Custom Cursor
-        const cursor = document.querySelector('.cursor');
-        const follower = document.querySelector('.cursor-follower');
-        
-        document.addEventListener('mousemove', (e) => {
-            gsap.to(cursor, {
-                x: e.clientX,
-                y: e.clientY,
-                duration: 0.1
-            });
-            
-            gsap.to(follower, {
-                x: e.clientX,
-                y: e.clientY,
-                duration: 0.3
-            });
-        });
-        
-        // Magnetic buttons
-        document.querySelectorAll('.magnetic-btn').forEach(btn => {
-            btn.addEventListener('mousemove', (e) => {
-                const rect = btn.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                
-                const centerX = rect.width / 2;
-                const centerY = rect.height / 2;
-                
-                const deltaX = (x - centerX) * 0.3;
-                const deltaY = (y - centerY) * 0.3;
-                
-                gsap.to(btn, {
-                    x: deltaX,
-                    y: deltaY,
-                    duration: 0.3
-                });
-            });
-            
-            btn.addEventListener('mouseleave', () => {
-                gsap.to(btn, {
-                    x: 0,
-                    y: 0,
-                    duration: 0.3
-                });
-            });
-        });
+      <!-- ===== HISTORY ===== -->
+      <section class="page" id="page-history">
+        <div class="page-head">
+          <h2>History</h2>
+          <p>Everything you generated in this session. Replay a clip, reuse its text in the studio, or copy it.</p>
+        </div>
+        <div class="card section-card">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+            <h3 style="margin:0">All generations</h3>
+            <span style="flex:1"></span>
+            <button class="btn sm danger-ghost" id="clearHistoryBtn">Clear history</button>
+          </div>
+          <div class="list" id="historyList"></div>
+        </div>
+      </section>
 
-        // Text animation for hero name
-        const nameText = document.getElementById('main-name');
-        const nameChars = nameText.textContent.split('');
-        nameText.textContent = '';
-        
-        nameChars.forEach((char, i) => {
-            const span = document.createElement('span');
-            span.textContent = char;
-            span.style.opacity = '0';
-            span.style.display = 'inline-block';
-            nameText.appendChild(span);
-            
-            gsap.to(span, {
-                opacity: 1,
-                duration: 0.5,
-                delay: i * 0.05,
-                ease: 'power3.out'
-            });
-        });
+      <!-- ===== SETTINGS ===== -->
+      <section class="page" id="page-settings">
+        <div class="page-head">
+          <h2>Settings</h2>
+          <p>Defaults for new sessions and how VoiceBarta looks on this device.</p>
+        </div>
+        <div class="settings-grid">
+          <div class="card section-card">
+            <h3>Playback defaults</h3>
+            <p class="sub">Applied to the studio each time you open this page.</p>
+            <div class="field">
+              <label for="defaultVoiceSelect">Default voice</label>
+              <select id="defaultVoiceSelect"></select>
+            </div>
+            <div class="field">
+              <label>Default speed <output id="defRateOut">1.00×</output></label>
+              <input type="range" id="defRateRange" min="0.5" max="2" step="0.05" value="1" />
+            </div>
+            <div class="field" style="margin-bottom:0">
+              <label>Default pitch <output id="defPitchOut">1.00</output></label>
+              <input type="range" id="defPitchRange" min="0" max="2" step="0.05" value="1" />
+            </div>
+          </div>
+          <div class="card section-card">
+            <h3>Appearance</h3>
+            <p class="sub">Choose a theme, or follow your device setting.</p>
+            <div class="field">
+              <label>Theme</label>
+              <div class="seg" id="themeSeg">
+                <button data-theme-val="system" class="active">System</button>
+                <button data-theme-val="light">Light</button>
+                <button data-theme-val="dark">Dark</button>
+              </div>
+            </div>
+            <div class="field" style="margin-bottom:0">
+              <label>Speech support on this device</label>
+              <p class="sub" id="supportNote" style="margin:0">Checking…</p>
+            </div>
+          </div>
+        </div>
+      </section>
 
-        // Section reveal animations
-        gsap.utils.toArray('.section-reveal').forEach(section => {
-            gsap.fromTo(section, 
-                {
-                    opacity: 0,
-                    y: 50
-                },
-                {
-                    opacity: 1,
-                    y: 0,
-                    duration: 1,
-                    scrollTrigger: {
-                        trigger: section,
-                        start: 'top 80%',
-                        toggleActions: 'play none none reverse'
-                    }
-                }
-            );
-        });
+    </main>
+  </div>
+</div>
 
-        // Floating skill cards animation
-        gsap.to('.skill-card', {
-            y: 10,
-            duration: 2,
-            repeat: -1,
-            yoyo: true,
-            ease: 'sine.inOut',
-            stagger: 0.5
-        });
+<div class="toast" id="toast" role="status"></div>
 
-        // Navbar scroll effect
-        window.addEventListener('scroll', () => {
-            const nav = document.querySelector('nav');
-            if (window.scrollY > 50) {
-                nav.classList.add('glass');
-                nav.classList.remove('bg-transparent');
-            } else {
-                nav.classList.add('glass');
-            }
-        });
+<script>
+(function(){
+"use strict";
+var $ = function(s){ return document.querySelector(s); };
+var $$ = function(s){ return Array.prototype.slice.call(document.querySelectorAll(s)); };
 
-        // Smooth scrolling for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                const targetId = this.getAttribute('href');
-                if (targetId === '#') return;
-                
-                const targetElement = document.querySelector(targetId);
-                if (targetElement) {
-                    window.scrollTo({
-                        top: targetElement.offsetTop - 80,
-                        behavior: 'smooth'
-                    });
-                }
-            });
-        });
+/* ---------------- State (this session only) ---------------- */
+var state = {
+  voices: [],
+  history: [],        // {id, text, voiceName, rate, pitch, time}
+  projects: [],       // {id, name, created, items:[{id,text,voiceName,time}]}
+  charsUsed: 0,
+  langFilter: "all",
+  search: "",
+  defaults: { voiceURI: null, rate: 1, pitch: 1 },
+  speakingId: null
+};
+var QUOTA = 10000, CHAR_LIMIT = 5000;
+var uid = 1;
+function nextId(){ return uid++; }
+function nowTime(){ return new Date().toLocaleTimeString([], {hour:"numeric", minute:"2-digit"}); }
+function esc(s){ return String(s).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
 
-        // Simple particles background
-        function createParticles() {
-            const container = document.getElementById('particles-js');
-            const particleCount = 50;
-            
-            for (let i = 0; i < particleCount; i++) {
-                const particle = document.createElement('div');
-                particle.style.position = 'absolute';
-                particle.style.width = Math.random() * 4 + 1 + 'px';
-                particle.style.height = particle.style.width;
-                particle.style.backgroundColor = 'rgba(0, 243, 255, 0.5)';
-                particle.style.borderRadius = '50%';
-                particle.style.left = Math.random() * 100 + 'vw';
-                particle.style.top = Math.random() * 100 + 'vh';
-                container.appendChild(particle);
-                
-                // Animate particle
-                gsap.to(particle, {
-                    x: Math.random() * 100 - 50,
-                    y: Math.random() * 100 - 50,
-                    duration: Math.random() * 10 + 10,
-                    repeat: -1,
-                    yoyo: true,
-                    ease: 'sine.inOut'
-                });
-            }
-        }
+/* Waveform bars */
+(function(){ var w=$("#wave"); var h=""; for(var i=0;i<28;i++){ h+="<i></i>"; } w.innerHTML=h; })();
 
-        // Initialize on load
-        window.addEventListener('load', () => {
-            createParticles();
-            
-            // Hero section entrance animation
-            gsap.from('#home h1', {
-                y: 100,
-                opacity: 0,
-                duration: 1.5,
-                ease: 'power4.out'
-            });
-            
-            gsap.from('#home p', {
-                y: 50,
-                opacity: 0,
-                duration: 1.2,
-                delay: 0.5,
-                ease: 'power3.out'
-            });
-            
-            gsap.from('#home .flex', {
-                y: 50,
-                opacity: 0,
-                duration: 1.2,
-                delay: 0.8,
-                ease: 'power3.out'
-            });
-        });
-    </script>
+/* ---------------- Toast ---------------- */
+var toastTimer=null;
+function toast(msg){
+  var t=$("#toast"); t.textContent=msg; t.classList.add("show");
+  clearTimeout(toastTimer); toastTimer=setTimeout(function(){ t.classList.remove("show"); }, 2400);
+}
+
+/* ---------------- Navigation ---------------- */
+var TITLES={home:"Home",studio:"Text to Speech",voices:"Voice Library",projects:"Projects",history:"History",settings:"Settings"};
+function go(page){
+  $$(".nav-item").forEach(function(b){ b.classList.toggle("active", b.dataset.page===page); });
+  $$(".page").forEach(function(p){ p.classList.toggle("active", p.id==="page-"+page); });
+  $("#pageTitle").textContent=TITLES[page]||"VoiceBarta";
+  $("#sidebar").classList.remove("open"); $("#scrim").classList.remove("show");
+  window.scrollTo({top:0});
+}
+$$(".nav-item").forEach(function(b){ b.addEventListener("click", function(){ go(b.dataset.page); }); });
+$$("[data-goto]").forEach(function(b){ b.addEventListener("click", function(){ go(b.dataset.goto); }); });
+$("#newSpeechBtn").addEventListener("click", function(){ go("studio"); $("#ttsText").focus(); });
+$("#menuBtn").addEventListener("click", function(){ $("#sidebar").classList.add("open"); $("#scrim").classList.add("show"); });
+$("#scrim").addEventListener("click", function(){ $("#sidebar").classList.remove("open"); $("#scrim").classList.remove("show"); });
+
+/* ---------------- Theme ---------------- */
+function applyTheme(val){
+  if(val==="system"){ document.documentElement.removeAttribute("data-theme"); }
+  else{ document.documentElement.setAttribute("data-theme", val); }
+  $$("#themeSeg button").forEach(function(b){ b.classList.toggle("active", b.dataset.themeVal===val); });
+}
+$$("#themeSeg button").forEach(function(b){ b.addEventListener("click", function(){ applyTheme(b.dataset.themeVal); }); });
+$("#themeBtn").addEventListener("click", function(){
+  var cur=document.documentElement.getAttribute("data-theme");
+  var dark = cur==="dark" || (!cur && window.matchMedia("(prefers-color-scheme: dark)").matches);
+  applyTheme(dark ? "light" : "dark");
+});
+
+/* ---------------- Voices ---------------- */
+var LANG_NAMES={bn:"Bengali",en:"English",hi:"Hindi",ur:"Urdu",ar:"Arabic",es:"Spanish",fr:"French",de:"German",it:"Italian",pt:"Portuguese",ru:"Russian",ja:"Japanese",ko:"Korean",zh:"Chinese",ta:"Tamil",te:"Telugu",mr:"Marathi",gu:"Gujarati",pa:"Punjabi",ne:"Nepali",si:"Sinhala",id:"Indonesian",ms:"Malay",tr:"Turkish",nl:"Dutch",sv:"Swedish",pl:"Polish",th:"Thai",vi:"Vietnamese"};
+function langName(code){ var base=(code||"").split("-")[0].toLowerCase(); return LANG_NAMES[base] || (code||"Unknown"); }
+var FACE_COLORS=["#0d9a66","#2563eb","#b45309","#be4066","#6d4fc2","#0e7490","#a33327","#3f6212"];
+function faceColor(name){ var s=0; for(var i=0;i<name.length;i++){ s+=name.charCodeAt(i); } return FACE_COLORS[s%FACE_COLORS.length]; }
+function initials(name){ var parts=name.replace(/^(Microsoft|Google|Apple)\s+/i,"").trim().split(/\s+/); return ((parts[0]||"V").charAt(0)+(parts[1]?parts[1].charAt(0):"")).toUpperCase(); }
+function genderGuess(name){
+  var n=name.toLowerCase();
+  var female=["female","zira","samantha","veena","lekha","heera","kalpana","priya","aditi","raveena","seema","kajal","swara","aaria","ananya","neerja","pooja","shruti","tessa","fiona","moira","karen","catherine","susan","linda","sarah","emily","victoria","amelie","anna","elena","maria","lucia","paulina","zira","aria","jenny","michelle","eva","cora"];
+  var male=["male","david","daniel","alex","ravi","hemant","rishi","kunal","arjun","kabir","george","thomas","james","ryan","guy","christopher","eric","brian","prabhat","madhur","salman","imran","farhan"];
+  for(var i=0;i<female.length;i++){ if(n.indexOf(female[i])>-1) return "Female"; }
+  for(var i=0;i<male.length;i++){ if(n.indexOf(male[i])>-1) return "Male"; }
+  return null;
+}
+function cleanVoiceName(v){
+  return v.name.replace(/\s*-\s*(English|Bangla|Bengali).*$/i,"").replace(/\s*\((Natural|Online)\)\s*/gi," ").trim();
+}
+
+/* ---------------- Sweet Female preset ----------------
+   A virtual voice choice: it resolves, at speak time, to the best
+   female-sounding voice installed on this device (preferring the
+   language of the text being spoken), with a sweeter tone applied
+   through the normal Speed / Pitch sliders so the user can adjust it.
+   If the device has no female voice, it falls back to the default
+   voice and says so in the note under the voice picker. */
+var SWEET_URI="__sweet_female__";
+var SWEET_RATE=0.95, SWEET_PITCH=1.2;
+function textLangCode(text){
+  if(/[\u0980-\u09FF]/.test(text||"")) return "bn";
+  return "en";
+}
+function resolveSweet(text){
+  var pref=textLangCode(text);
+  var females=state.voices.filter(function(v){ return genderGuess(v.name)==="Female"; });
+  function byLang(l){ return females.filter(function(v){ return (v.lang||"").toLowerCase().indexOf(l)===0; })[0]||null; }
+  var pick=byLang(pref) || byLang(pref==="bn"?"en":"bn") || females[0] || null;
+  var isFemale=!!pick;
+  if(!pick){
+    pick=state.voices.filter(function(v){ return v.default; })[0] || state.voices[0] || null;
+  }
+  var res={ voice:pick, female:isFemale, lang:pref };
+  state.sweet=res;
+  return res;
+}
+function sweetSelected(){ return $("#voiceSelect").value===SWEET_URI; }
+function applySweetTone(){
+  var r=$("#rateRange"); r.value=SWEET_RATE; r.dispatchEvent(new Event("input"));
+  var p=$("#pitchRange"); p.value=SWEET_PITCH; p.dispatchEvent(new Event("input"));
+}
+function updateSweetNote(){
+  var note=$("#sweetNote");
+  if(!sweetSelected()){ note.hidden=true; return; }
+  var res=resolveSweet($("#ttsText").value);
+  note.hidden=false;
+  if(!state.voices.length || !res.voice){
+    note.innerHTML="No speech voices are available in this browser yet, so <b>Sweet Female</b> can't play right now. Try reloading the page.";
+  } else if(res.female){
+    note.innerHTML="<b>Sweet Female</b> is using <b>"+esc(cleanVoiceName(res.voice))+"</b> — the best female voice on your device for "+(res.lang==="bn"?"Bengali":"English")+". Pitch and speed are set to the sweet preset; adjust them anytime with the sliders below.";
+  } else {
+    note.innerHTML="No female voice is installed on this device, so <b>Sweet Female</b> is falling back to <b>"+esc(cleanVoiceName(res.voice))+"</b> (your default voice) with a sweeter tone — slightly higher pitch, gentle speed. To hear a real female voice, add one in your device's text-to-speech settings.";
+  }
+}
+
+function loadVoices(){
+  if(!("speechSynthesis" in window)){ $("#supportNote").textContent="This browser does not support speech synthesis, so voices can't be played here. Try Chrome or Edge."; return; }
+  var list=window.speechSynthesis.getVoices()||[];
+  if(!list.length) return;
+  list.sort(function(a,b){
+    var la=(a.lang||"").toLowerCase(), lb=(b.lang||"").toLowerCase();
+    var pa=(la.indexOf("bn")===0?0:la.indexOf("en")===0?1:2), pb=(lb.indexOf("bn")===0?0:lb.indexOf("en")===0?1:2);
+    if(pa!==pb) return pa-pb;
+    return a.name.localeCompare(b.name);
+  });
+  state.voices=list;
+  renderVoiceSelects(); renderVoiceGrid(); renderLangFilters(); updateStats(); updateSweetNote();
+  $("#supportNote").textContent=list.length+" voices are available on this device, including "+list.filter(function(v){return (v.lang||"").toLowerCase().indexOf("bn")===0;}).length+" Bengali voice(s). Playback happens entirely on your device.";
+}
+if("speechSynthesis" in window){
+  loadVoices();
+  window.speechSynthesis.onvoiceschanged=loadVoices;
+} else {
+  $("#supportNote").textContent="Speech synthesis is not supported in this browser.";
+}
+
+function voiceOptionsHTML(selectedURI){
+  if(!state.voices.length) return '<option value="">No voices available</option>';
+  var groups={};
+  state.voices.forEach(function(v){ var l=langName(v.lang); (groups[l]=groups[l]||[]).push(v); });
+  var known=selectedURI===SWEET_URI || !!findVoiceByURI(selectedURI);
+  var html='<option value="'+SWEET_URI+'"'+(selectedURI===SWEET_URI?" selected":"")+'>Sweet Female — auto (best female voice on your device)</option>';
+  Object.keys(groups).sort().forEach(function(l){
+    html+='<optgroup label="'+esc(l)+'">';
+    groups[l].forEach(function(v){
+      var sel=v.voiceURI===selectedURI || (!known && v===state.voices[0]);
+      html+='<option value="'+esc(v.voiceURI)+'"'+(sel?" selected":"")+'>'+esc(cleanVoiceName(v))+" · "+esc(v.lang)+"</option>";
+    });
+    html+="</optgroup>";
+  });
+  return html;
+}
+function renderVoiceSelects(){
+  var cur=$("#voiceSelect").value || state.defaults.voiceURI;
+  $("#voiceSelect").innerHTML=voiceOptionsHTML(cur);
+  $("#defaultVoiceSelect").innerHTML=voiceOptionsHTML(state.defaults.voiceURI);
+  var bn=state.voices.filter(function(v){ return (v.lang||"").toLowerCase().indexOf("bn")===0; })[0];
+  if(bn && !$("#voiceSelect").value){ /* keep browser order */ }
+}
+$("#defaultVoiceSelect").addEventListener("change", function(){
+  state.defaults.voiceURI=this.value||null;
+  $("#voiceSelect").innerHTML=voiceOptionsHTML(this.value);
+  if(sweetSelected()) applySweetTone();
+  updateSweetNote();
+  toast(this.value===SWEET_URI ? "Default voice set: Sweet Female" : "Default voice updated");
+});
+$("#voiceSelect").addEventListener("change", function(){
+  if(sweetSelected()) applySweetTone();
+  updateSweetNote();
+});
+function selectedVoice(){
+  var uri=$("#voiceSelect").value;
+  if(uri===SWEET_URI) return resolveSweet($("#ttsText").value).voice;
+  for(var i=0;i<state.voices.length;i++){ if(state.voices[i].voiceURI===uri) return state.voices[i]; }
+  return state.voices[0]||null;
+}
+function findVoiceByURI(uri){
+  for(var i=0;i<state.voices.length;i++){ if(state.voices[i].voiceURI===uri) return state.voices[i]; }
+  return null;
+}
+
+function renderLangFilters(){
+  var langs={};
+  state.voices.forEach(function(v){ var l=langName(v.lang); langs[l]=(langs[l]||0)+1; });
+  var keys=Object.keys(langs).sort();
+  var html='<button class="filter-chip'+(state.langFilter==="all"?" active":"")+'" data-lang="all">All languages · '+state.voices.length+"</button>";
+  keys.forEach(function(l){
+    html+='<button class="filter-chip'+(state.langFilter===l?" active":"")+'" data-lang="'+esc(l)+'">'+esc(l)+" · "+langs[l]+"</button>";
+  });
+  $("#langFilters").innerHTML=html;
+  $$("#langFilters .filter-chip").forEach(function(c){
+    c.addEventListener("click", function(){ state.langFilter=c.dataset.lang; renderLangFilters(); renderVoiceGrid(); });
+  });
+}
+
+function renderVoiceGrid(){
+  var q=state.search.trim().toLowerCase();
+  var shown=state.voices.filter(function(v){
+    if(state.langFilter!=="all" && langName(v.lang)!==state.langFilter) return false;
+    if(q && (v.name+" "+v.lang+" "+langName(v.lang)).toLowerCase().indexOf(q)===-1) return false;
+    return true;
+  });
+  $("#voiceEmpty").style.display=state.voices.length? "none":"block";
+  $("#voiceGrid").innerHTML=shown.map(function(v){
+    var g=genderGuess(v.name);
+    var tags='<span class="tag green">'+esc(langName(v.lang))+"</span>"
+      +(g?'<span class="tag">'+g+"</span>":"")
+      +(v.localService?'<span class="tag">On-device</span>':'<span class="tag">Online</span>')
+      +(v.default?'<span class="tag">Default</span>':"");
+    return '<div class="card voice-card">'
+      +'<div class="voice-top"><div class="voice-face" style="background:'+faceColor(v.name)+'">'+esc(initials(v.name))+'</div>'
+      +'<div style="min-width:0"><div class="voice-name">'+esc(cleanVoiceName(v))+'</div><div class="voice-lang">'+esc(v.lang)+"</div></div></div>"
+      +'<div class="voice-tags">'+tags+"</div>"
+      +'<div class="voice-actions">'
+      +'<button class="btn sm" data-preview="'+esc(v.voiceURI)+'">Preview</button>'
+      +'<button class="btn sm primary" data-use="'+esc(v.voiceURI)+'">Use voice</button>'
+      +"</div></div>";
+  }).join("");
+  $$("#voiceGrid [data-preview]").forEach(function(b){
+    b.addEventListener("click", function(){
+      var v=findVoiceByURI(b.dataset.preview); if(v) previewVoice(v);
+    });
+  });
+  $$("#voiceGrid [data-use]").forEach(function(b){
+    b.addEventListener("click", function(){
+      var v=findVoiceByURI(b.dataset.use); if(!v) return;
+      $("#voiceSelect").innerHTML=voiceOptionsHTML(v.voiceURI);
+      go("studio");
+      toast("Voice set: "+cleanVoiceName(v));
+    });
+  });
+}
+
+/* ---------------- Speech engine ---------------- */
+function previewTextFor(voice){
+  var l=(voice.lang||"").toLowerCase();
+  if(l.indexOf("bn")===0) return "আসসালামু আলাইকুম! আমি VoiceBarta থেকে বলছি। আমার কণ্ঠ কেমন লাগছে?";
+  if(l.indexOf("hi")===0) return "नमस्ते! मैं VoiceBarta से बोल रहा हूँ। मेरी आवाज़ कैसी लगी?";
+  return "Hello! This is VoiceBarta. How does my voice sound?";
+}
+function speak(text, voice, rate, pitch, vol, onDone){
+  if(!("speechSynthesis" in window)){ toast("Speech is not supported in this browser"); return; }
+  window.speechSynthesis.cancel();
+  var u=new SpeechSynthesisUtterance(text);
+  if(voice){ u.voice=voice; u.lang=voice.lang; }
+  u.rate=rate; u.pitch=pitch; u.volume=vol;
+  $("#wave").classList.add("playing");
+  $("#stopBtn").disabled=false;
+  u.onend=u.onerror=function(){
+    $("#wave").classList.remove("playing");
+    $("#stopBtn").disabled=true;
+    state.speakingId=null;
+    if(onDone) onDone();
+    renderAllLists();
+  };
+  window.speechSynthesis.speak(u);
+}
+function previewVoice(v){
+  speak(previewTextFor(v), v, parseFloat($("#rateRange").value), parseFloat($("#pitchRange").value), parseFloat($("#volRange").value));
+  setStatus("Previewing <b>"+esc(cleanVoiceName(v))+"</b>…");
+}
+function stopSpeaking(){
+  if("speechSynthesis" in window) window.speechSynthesis.cancel();
+  $("#wave").classList.remove("playing");
+  $("#stopBtn").disabled=true;
+  state.speakingId=null;
+  setStatus("Stopped.");
+  renderAllLists();
+}
+$("#stopBtn").addEventListener("click", stopSpeaking);
+function setStatus(html){ $("#statusLine").innerHTML=html; }
+
+/* ---------------- Studio controls ---------------- */
+var SAMPLES={
+  "bn-greet":"আসসালামু আলাইকুম, VoiceBarta-তে স্বাগতম! আপনার লেখা এখন জীবন্ত কণ্ঠে শোনা যাবে।",
+  "bn-story":"একদা একটি ছোট্ট গ্রামে মুক্তা নামে একটি সৎ রাজহাঁস বাস করত। সে প্রতিদিন সকালে নদীর ধারে গিয়ে গান গাইত।",
+  "en-welcome":"Welcome to VoiceBarta, your friendly voice studio. Type anything and hear it spoken in a natural voice.",
+  "en-news":"Good evening. In today's headlines, local farmers report a record harvest this season, and the city prepares for the annual book fair this weekend."
+};
+$$("#sampleRow .sample-chip").forEach(function(c){
+  c.addEventListener("click", function(){
+    $("#ttsText").value=SAMPLES[c.dataset.sample]||"";
+    updateCharCount(); $("#ttsText").focus();
+  });
+});
+function updateCharCount(){
+  var len=$("#ttsText").value.length;
+  var cc=$("#charCount");
+  cc.textContent=len.toLocaleString()+" / "+CHAR_LIMIT.toLocaleString();
+  cc.classList.toggle("over", len>=CHAR_LIMIT);
+  var words=$("#ttsText").value.trim()? $("#ttsText").value.trim().split(/\s+/).length:0;
+  var secs=Math.max(0, Math.round(words/2.4));
+  $("#estTime").textContent="≈ "+(secs>=60? Math.floor(secs/60)+" min "+(secs%60)+" sec":secs+" sec")+" of speech";
+}
+$("#ttsText").addEventListener("input", function(){ updateCharCount(); updateSweetNote(); });
+$("#clearTextBtn").addEventListener("click", function(){ $("#ttsText").value=""; updateCharCount(); $("#ttsText").focus(); });
+$("#pasteBtn").addEventListener("click", function(){
+  if(navigator.clipboard && navigator.clipboard.readText){
+    navigator.clipboard.readText().then(function(t){
+      if(t){ $("#ttsText").value=t; updateCharCount(); toast("Text pasted"); }
+      else toast("Clipboard is empty");
+    }).catch(function(){ toast("Clipboard access was blocked — paste with Ctrl+V instead"); });
+  } else toast("Use Ctrl+V to paste");
+});
+
+function bindRange(range, out, fmt, onChange){
+  var r=$(range), o=$(out);
+  function upd(){ o.textContent=fmt(parseFloat(r.value)); if(onChange) onChange(parseFloat(r.value)); }
+  r.addEventListener("input", upd); upd();
+}
+bindRange("#rateRange","#rateOut",function(v){return v.toFixed(2)+"×";});
+bindRange("#pitchRange","#pitchOut",function(v){return v.toFixed(2);});
+bindRange("#volRange","#volOut",function(v){return Math.round(v*100)+"%";});
+bindRange("#defRateRange","#defRateOut",function(v){return v.toFixed(2)+"×";},function(v){ state.defaults.rate=v; $("#rateRange").value=v; $("#rateRange").dispatchEvent(new Event("input")); });
+bindRange("#defPitchRange","#defPitchOut",function(v){return v.toFixed(2);},function(v){ state.defaults.pitch=v; $("#pitchRange").value=v; $("#pitchRange").dispatchEvent(new Event("input")); });
+
+$("#previewBtn").addEventListener("click", function(){
+  var v=selectedVoice();
+  if(v) previewVoice(v); else toast("No voice available yet");
+});
+
+$("#generateBtn").addEventListener("click", function(){
+  var text=$("#ttsText").value.trim();
+  if(!text){ toast("Write something first"); $("#ttsText").focus(); return; }
+  var v=selectedVoice();
+  if(!v){ toast("No voice available in this browser"); return; }
+  var rate=parseFloat($("#rateRange").value), pitch=parseFloat($("#pitchRange").value), vol=parseFloat($("#volRange").value);
+  var voiceName=cleanVoiceName(v), sweetNote="";
+  if(sweetSelected()){
+    if(state.sweet && state.sweet.female){ voiceName="Sweet Female · "+voiceName; }
+    else { voiceName="Sweet Female (default voice) · "+voiceName; sweetNote=" No female voice on this device — using your default voice with the sweet tone."; }
+  }
+  var entry={id:nextId(), text:text, voiceName:voiceName, voiceURI:v.voiceURI, lang:v.lang, rate:rate, pitch:pitch, time:nowTime()};
+  state.history.unshift(entry);
+  state.charsUsed+=text.length;
+  state.speakingId=entry.id;
+  setStatus("Generating with <b>"+esc(entry.voiceName)+"</b>…"+esc(sweetNote));
+  speak(text, v, rate, pitch, vol, function(){ setStatus("Done — saved to History."); });
+  updateStats(); renderAllLists();
+});
+
+/* ---------------- History & recent ---------------- */
+var ICON_PLAY='<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.8v14.4c0 .9 1 1.5 1.8 1L20 13a1.2 1.2 0 0 0 0-2L8.8 3.9C8 3.4 7 4 7 4.8Z"/></svg>';
+var ICON_STOP='<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>';
+var ICON_COPY='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+var ICON_EDIT='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.8 2.8 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>';
+var ICON_TRASH='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>';
+
+function historyRow(h){
+  var playing=state.speakingId===h.id;
+  return '<div class="list-row">'
+    +'<button class="play-dot" data-play="'+h.id+'" aria-label="'+(playing?"Stop":"Play")+'">'+(playing?ICON_STOP:ICON_PLAY)+"</button>"
+    +'<div class="r-main"><div class="r-text">'+esc(h.text)+'</div>'
+    +'<div class="r-meta">'+esc(h.voiceName)+" · "+esc(h.lang||"")+" · "+h.rate.toFixed(2)+"× · "+esc(h.time)+"</div></div>"
+    +'<div class="row-actions">'
+    +'<button class="mini-btn" data-reuse="'+h.id+'" title="Open in studio" aria-label="Open in studio">'+ICON_EDIT+"</button>"
+    +'<button class="mini-btn" data-copy="'+h.id+'" title="Copy text" aria-label="Copy text">'+ICON_COPY+"</button>"
+    +'<button class="mini-btn danger" data-del="'+h.id+'" title="Delete" aria-label="Delete">'+ICON_TRASH+"</button>"
+    +"</div></div>";
+}
+function bindHistoryRows(scope){
+  $$("#"+scope+" [data-play]").forEach(function(b){
+    b.addEventListener("click", function(){
+      var h=state.history.filter(function(x){return x.id==b.dataset.play;})[0]; if(!h) return;
+      if(state.speakingId===h.id){ stopSpeaking(); return; }
+      var v=findVoiceByURI(h.voiceURI)||state.voices[0];
+      state.speakingId=h.id;
+      speak(h.text, v, h.rate, h.pitch, 1);
+      renderAllLists();
+    });
+  });
+  $$("#"+scope+" [data-reuse]").forEach(function(b){
+    b.addEventListener("click", function(){
+      var h=state.history.filter(function(x){return x.id==b.dataset.reuse;})[0]; if(!h) return;
+      $("#ttsText").value=h.text; updateCharCount();
+      if(findVoiceByURI(h.voiceURI)) $("#voiceSelect").innerHTML=voiceOptionsHTML(h.voiceURI);
+      go("studio"); toast("Loaded into the studio");
+    });
+  });
+  $$("#"+scope+" [data-copy]").forEach(function(b){
+    b.addEventListener("click", function(){
+      var h=state.history.filter(function(x){return x.id==b.dataset.copy;})[0]; if(!h) return;
+      if(navigator.clipboard) navigator.clipboard.writeText(h.text).then(function(){ toast("Text copied"); });
+    });
+  });
+  $$("#"+scope+" [data-del]").forEach(function(b){
+    b.addEventListener("click", function(){
+      state.history=state.history.filter(function(x){return x.id!=b.dataset.del;});
+      updateStats(); renderAllLists(); toast("Removed from history");
+    });
+  });
+}
+function renderHistory(){
+  var q=state.search.trim().toLowerCase();
+  var items=state.history.filter(function(h){ return !q || (h.text+" "+h.voiceName).toLowerCase().indexOf(q)>-1; });
+  $("#historyList").innerHTML=items.length? items.map(historyRow).join("")
+    : '<div class="empty"><b>Nothing here yet</b>Generate your first speech in the studio and it will show up here.</div>';
+  bindHistoryRows("historyList");
+  var recent=state.history.slice(0,5);
+  $("#recentList").innerHTML=recent.length? recent.map(historyRow).join("")
+    : '<div class="empty"><b>No generations yet</b>Head to Text to Speech, type a line, and press Generate speech.</div>';
+  bindHistoryRows("recentList");
+  $("#historyCountBadge").textContent=state.history.length;
+}
+$("#clearHistoryBtn").addEventListener("click", function(){
+  if(!state.history.length){ toast("History is already empty"); return; }
+  state.history=[]; updateStats(); renderAllLists(); toast("History cleared");
+});
+
+/* ---------------- Projects ---------------- */
+function renderProjects(){
+  $("#projectCountBadge").textContent=state.projects.length;
+  $("#projectEmpty").style.display=state.projects.length? "none":"block";
+  $("#projectGrid").innerHTML=state.projects.map(function(p){
+    var items=p.items.map(function(it){
+      return '<div class="list-row"><button class="play-dot" data-pplay="'+p.id+":"+it.id+'" aria-label="Play">'+ICON_PLAY+"</button>"
+        +'<div class="r-main"><div class="r-text">'+esc(it.text)+'</div><div class="r-meta">'+esc(it.voiceName||"")+" · "+esc(it.time)+"</div></div>"
+        +'<div class="row-actions"><button class="mini-btn danger" data-pdel="'+p.id+":"+it.id+'" aria-label="Remove clip">'+ICON_TRASH+"</button></div></div>";
+    }).join("");
+    return '<div class="card project-card"><h4>'+esc(p.name)+"</h4>"
+      +'<div class="p-meta">'+p.items.length+" clip"+(p.items.length===1?"":"s")+" · created "+esc(p.created)+"</div>"
+      +(items? '<div class="project-items">'+items+"</div>" : '<p class="sub" style="margin:0">No clips yet — save a text into this project from the studio.</p>')
+      +'<div style="margin-top:12px;display:flex;gap:8px"><button class="btn sm" data-open-project="'+p.id+'">Add from studio</button>'
+      +'<button class="btn sm danger-ghost" data-del-project="'+p.id+'">Delete project</button></div></div>';
+  }).join("");
+  $$("#projectGrid [data-pplay]").forEach(function(b){
+    b.addEventListener("click", function(){
+      var parts=b.dataset.pplay.split(":"); var pid=+parts[0], iid=+parts[1];
+      var p=state.projects.filter(function(x){return x.id===pid;})[0]; if(!p) return;
+      var it=p.items.filter(function(x){return x.id===iid;})[0]; if(!it) return;
+      var v=findVoiceByURI(it.voiceURI)||state.voices[0];
+      speak(it.text, v, 1, 1, 1);
+    });
+  });
+  $$("#projectGrid [data-pdel]").forEach(function(b){
+    b.addEventListener("click", function(){
+      var parts=b.dataset.pdel.split(":"); var pid=+parts[0], iid=+parts[1];
+      var p=state.projects.filter(function(x){return x.id===pid;})[0]; if(!p) return;
+      p.items=p.items.filter(function(x){return x.id!==iid;});
+      renderProjects(); renderSaveSelect();
+    });
+  });
+  $$("#projectGrid [data-del-project]").forEach(function(b){
+    b.addEventListener("click", function(){
+      state.projects=state.projects.filter(function(x){return x.id!=b.dataset.delProject;});
+      renderProjects(); renderSaveSelect(); updateStats(); toast("Project deleted");
+    });
+  });
+  $$("#projectGrid [data-open-project]").forEach(function(b){
+    b.addEventListener("click", function(){
+      go("studio");
+      $("#saveProjectSelect").value=b.dataset.openProject;
+      $("#ttsText").focus();
+    });
+  });
+}
+function renderSaveSelect(){
+  var sel=$("#saveProjectSelect");
+  if(!state.projects.length){ sel.innerHTML='<option value="">No projects yet</option>'; return; }
+  sel.innerHTML=state.projects.map(function(p){ return '<option value="'+p.id+'">'+esc(p.name)+"</option>"; }).join("");
+}
+function createProject(name){
+  name=(name||"").trim();
+  if(!name){ toast("Give the project a name first"); return null; }
+  var p={id:nextId(), name:name, created:new Date().toLocaleDateString([], {month:"short", day:"numeric", year:"numeric"}), items:[]};
+  state.projects.unshift(p);
+  renderProjects(); renderSaveSelect(); updateStats();
+  return p;
+}
+$("#createProjectBtn").addEventListener("click", function(){
+  var p=createProject($("#projectNameInput").value);
+  if(p){ $("#projectNameInput").value=""; toast("Project created: "+p.name); }
+});
+$("#projectNameInput").addEventListener("keydown", function(e){ if(e.key==="Enter") $("#createProjectBtn").click(); });
+$("#saveToProjectBtn").addEventListener("click", function(){
+  var text=$("#ttsText").value.trim();
+  if(!text){ toast("Write something first"); return; }
+  var pid=$("#saveProjectSelect").value;
+  var p=state.projects.filter(function(x){return x.id==pid;})[0];
+  if(!p){ toast("Create a project first"); go("projects"); return; }
+  var v=selectedVoice();
+  p.items.unshift({id:nextId(), text:text, voiceName:v?cleanVoiceName(v):"", voiceURI:v?v.voiceURI:"", time:nowTime()});
+  renderProjects();
+  toast("Saved to "+p.name);
+});
+
+/* Seed one starter project so the page shows its shape */
+createProject("My first project");
+
+/* ---------------- Stats / usage ---------------- */
+function updateStats(){
+  $("#statGen").textContent=state.history.length;
+  $("#statChars").textContent=state.charsUsed.toLocaleString();
+  $("#statVoices").textContent=state.voices.length;
+  $("#statProjects").textContent=state.projects.length;
+  $("#voiceCountBadge").textContent=state.voices.length;
+  var pct=Math.min(100, Math.round(state.charsUsed/QUOTA*100));
+  $("#usageMeter").style.width=pct+"%";
+  $("#usageNum").textContent=state.charsUsed.toLocaleString()+" / "+QUOTA.toLocaleString()+" characters";
+}
+function renderAllLists(){ renderHistory(); }
+
+/* ---------------- Search ---------------- */
+$("#searchInput").addEventListener("input", function(){
+  state.search=this.value;
+  renderVoiceGrid(); renderHistory();
+  if(this.value.trim()){ /* stay on page; grids filter live */ }
+});
+
+/* ---------------- Init ---------------- */
+updateCharCount();
+updateStats();
+renderAllLists();
+renderProjects();
+renderSaveSelect();
+if(!("speechSynthesis" in window)){
+  setStatus("Speech synthesis isn't supported in this browser — try Chrome or Edge to hear voices.");
+  $("#generateBtn").disabled=true;
+}
+})();
+</script>
 </body>
 </html>
