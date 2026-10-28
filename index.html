@@ -1016,12 +1016,50 @@ function resolveSweet(text){
   return res;
 }
 function sweetSelected(){ return $("#voiceSelect").value===SWEET_URI; }
+
+/* ---------------- Bengali presets ----------------
+   Two virtual voice choices, same pattern as Sweet Female: they
+   resolve, at speak time, to a Bengali (bn) voice installed on this
+   device — Bengali Female prefers a female-sounding Bengali voice,
+   Bengali Male prefers a male-sounding one, and each falls back to
+   any Bengali voice, then to the default voice, saying so in the
+   note under the voice picker. Until a Bengali voice is installed
+   on the device (Windows Settings → Language → Bengali), these
+   presets will speak with the fallback voice, not real Bengali. */
+var BN_FEMALE_URI="__bengali_female__";
+var BN_MALE_URI="__bengali_male__";
+function bengaliSelected(){ var v=$("#voiceSelect").value; return v===BN_FEMALE_URI || v===BN_MALE_URI; }
+function resolveBengali(gender){
+  var bn=state.voices.filter(function(v){ return (v.lang||"").toLowerCase().indexOf("bn")===0; });
+  var pick=bn.filter(function(v){ return genderGuess(v.name)===gender; })[0] || bn[0] || null;
+  var isBengali=!!pick;
+  if(!pick){
+    pick=state.voices.filter(function(v){ return v.default; })[0] || state.voices[0] || null;
+  }
+  var res={ voice:pick, bengali:isBengali, gender:gender };
+  state.bengali=res;
+  return res;
+}
 function applySweetTone(){
   var r=$("#rateRange"); r.value=SWEET_RATE; r.dispatchEvent(new Event("input"));
   var p=$("#pitchRange"); p.value=SWEET_PITCH; p.dispatchEvent(new Event("input"));
 }
 function updateSweetNote(){
   var note=$("#sweetNote");
+  if(bengaliSelected()){
+    var gender=$("#voiceSelect").value===BN_FEMALE_URI?"Female":"Male";
+    var label=gender==="Female"?"Bengali Female":"Bengali Male";
+    var bres=resolveBengali(gender);
+    note.hidden=false;
+    if(!state.voices.length || !bres.voice){
+      note.innerHTML="No speech voices are available in this browser yet, so <b>"+label+"</b> can't play right now. Try reloading the page.";
+    } else if(bres.bengali){
+      note.innerHTML="<b>"+label+"</b> is using <b>"+esc(cleanVoiceName(bres.voice))+"</b> — a Bengali voice on your device.";
+    } else {
+      note.innerHTML="No Bengali voice is installed on this device yet, so <b>"+label+"</b> is falling back to <b>"+esc(cleanVoiceName(bres.voice))+"</b> (your default voice). To hear real Bengali, add a Bengali voice in Windows Settings → Time & language → Language & region → Add Bengali, then reload this page.";
+    }
+    return;
+  }
   if(!sweetSelected()){ note.hidden=true; return; }
   var res=resolveSweet($("#ttsText").value);
   note.hidden=false;
@@ -1059,8 +1097,10 @@ function voiceOptionsHTML(selectedURI){
   if(!state.voices.length) return '<option value="">No voices available</option>';
   var groups={};
   state.voices.forEach(function(v){ var l=langName(v.lang); (groups[l]=groups[l]||[]).push(v); });
-  var known=selectedURI===SWEET_URI || !!findVoiceByURI(selectedURI);
+  var known=selectedURI===SWEET_URI || selectedURI===BN_FEMALE_URI || selectedURI===BN_MALE_URI || !!findVoiceByURI(selectedURI);
   var html='<option value="'+SWEET_URI+'"'+(selectedURI===SWEET_URI?" selected":"")+'>Sweet Female — auto (best female voice on your device)</option>';
+  html+='<option value="'+BN_FEMALE_URI+'"'+(selectedURI===BN_FEMALE_URI?" selected":"")+'>Bengali Female — auto (Bengali voice on your device)</option>';
+  html+='<option value="'+BN_MALE_URI+'"'+(selectedURI===BN_MALE_URI?" selected":"")+'>Bengali Male — auto (Bengali voice on your device)</option>';
   Object.keys(groups).sort().forEach(function(l){
     html+='<optgroup label="'+esc(l)+'">';
     groups[l].forEach(function(v){
@@ -1092,6 +1132,8 @@ $("#voiceSelect").addEventListener("change", function(){
 function selectedVoice(){
   var uri=$("#voiceSelect").value;
   if(uri===SWEET_URI) return resolveSweet($("#ttsText").value).voice;
+  if(uri===BN_FEMALE_URI) return resolveBengali("Female").voice;
+  if(uri===BN_MALE_URI) return resolveBengali("Male").voice;
   for(var i=0;i<state.voices.length;i++){ if(state.voices[i].voiceURI===uri) return state.voices[i]; }
   return state.voices[0]||null;
 }
@@ -1250,6 +1292,10 @@ $("#generateBtn").addEventListener("click", function(){
   if(sweetSelected()){
     if(state.sweet && state.sweet.female){ voiceName="Sweet Female · "+voiceName; }
     else { voiceName="Sweet Female (default voice) · "+voiceName; sweetNote=" No female voice on this device — using your default voice with the sweet tone."; }
+  } else if(bengaliSelected()){
+    var blabel=$("#voiceSelect").value===BN_FEMALE_URI?"Bengali Female":"Bengali Male";
+    if(state.bengali && state.bengali.bengali){ voiceName=blabel+" · "+voiceName; }
+    else { voiceName=blabel+" (default voice) · "+voiceName; sweetNote=" No Bengali voice on this device — using your default voice."; }
   }
   var entry={id:nextId(), text:text, voiceName:voiceName, voiceURI:v.voiceURI, lang:v.lang, rate:rate, pitch:pitch, time:nowTime(), createdAt:Date.now()};
   state.history.unshift(entry);
