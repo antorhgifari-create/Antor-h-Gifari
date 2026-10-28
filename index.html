@@ -251,6 +251,37 @@ input[type="range"]{width:100%;accent-color:var(--accent);height:26px}
 .seg button{flex:1;border:0;background:none;padding:7px 10px;border-radius:99px;font-weight:700;font-size:13px;color:var(--ink-2)}
 .seg button.active{background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
 
+/* ---------- Account / Firebase ---------- */
+.account-notice{border-radius:var(--r-md);padding:13px 16px;margin-bottom:18px;font-size:13.5px;line-height:1.55;display:flex;gap:11px;align-items:flex-start}
+.account-notice svg{flex:none;margin-top:1px}
+.account-notice.warn{background:#fdf3e0;border:1px solid #ecd9ae;color:#6b4d0e}
+.account-notice.session{background:var(--surface);border:1px solid var(--line);color:var(--ink-2)}
+.account-notice.signed{background:var(--accent-soft);border:1px solid transparent;color:var(--ink-2)}
+.account-notice b{color:var(--ink)}
+.account-notice.warn b{color:#6b4d0e}
+.account-notice code{background:rgba(0,0,0,.06);padding:1px 5px;border-radius:5px;font-size:12px;word-break:break-all}
+.account-notice[hidden]{display:none}
+.auth-area{display:flex;align-items:center;gap:9px}
+.google-btn{
+  border:1px solid var(--line);background:var(--surface);color:var(--ink);
+  padding:8px 14px;border-radius:99px;font-weight:700;font-size:13.5px;
+  display:inline-flex;align-items:center;gap:8px;white-space:nowrap;
+}
+.google-btn:hover{border-color:var(--accent)}
+.google-btn[hidden]{display:none}
+.google-btn:disabled{opacity:.55;cursor:not-allowed}
+.signed-in{display:flex;align-items:center;gap:9px;min-width:0}
+.signed-in[hidden]{display:none}
+.header-avatar{width:34px;height:34px;border-radius:50%;background:var(--accent);color:#fff;display:grid;place-items:center;font-weight:800;font-size:13px;flex:none;overflow:hidden}
+.header-avatar img{width:100%;height:100%;object-fit:cover;display:block}
+.header-user{min-width:0;line-height:1.2}
+.header-user .hu-name{font-weight:700;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:170px}
+.header-user .hu-email{font-size:11.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:170px}
+@media (max-width:860px){
+  .header-user{display:none}
+  .topbar{flex-wrap:wrap}
+}
+
 /* ---------- Toast ---------- */
 .toast{
   position:fixed;left:50%;bottom:26px;transform:translate(-50%,20px);z-index:80;
@@ -348,10 +379,10 @@ input[type="range"]{width:100%;accent-color:var(--accent);height:26px}
     </div>
 
     <div class="user-chip">
-      <div class="avatar">A</div>
-      <div>
-        <div class="u-name">Antor</div>
-        <div class="u-plan">Personal workspace</div>
+      <div class="avatar" id="sideAvatar">A</div>
+      <div style="min-width:0">
+        <div class="u-name" id="sideUserName">Antor</div>
+        <div class="u-plan" id="sideUserPlan">Personal workspace · not signed in</div>
       </div>
     </div>
   </aside>
@@ -369,6 +400,20 @@ input[type="range"]{width:100%;accent-color:var(--accent);height:26px}
         <input id="searchInput" type="search" placeholder="Search voices and history…" aria-label="Search voices and history" />
       </div>
       <div class="top-actions">
+        <div class="auth-area">
+          <button class="google-btn" id="signInBtn">
+            <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M23.5 12.3c0-.9-.1-1.5-.3-2.2H12v4.3h6.5c-.1 1.1-.8 2.7-2.4 3.8l3.7 2.9c2.3-2.1 3.7-5.2 3.7-8.8z"/><path fill="#34A853" d="M12 24c3.2 0 5.9-1.1 7.9-2.9l-3.7-2.9c-1 .7-2.4 1.2-4.2 1.2-3.2 0-5.9-2.1-6.8-5.1L1.3 17.2C3.3 21.2 7.3 24 12 24z"/><path fill="#FBBC05" d="M5.2 14.3c-.2-.7-.4-1.5-.4-2.3s.1-1.6.4-2.3L1.3 6.8C.5 8.4 0 10.1 0 12s.5 3.6 1.3 5.2l3.9-2.9z"/><path fill="#EA4335" d="M12 4.7c1.8 0 3 .8 3.7 1.4l3.3-3.2C17.9 1.1 15.2 0 12 0 7.3 0 3.3 2.8 1.3 6.8l3.9 2.9c.9-2.9 3.6-5 6.8-5z"/></svg>
+            <span class="btn-label">Sign in with Google</span><span class="btn-label-short" style="display:none">Sign in</span>
+          </button>
+          <div class="signed-in" id="signedInBox" hidden>
+            <div class="header-avatar" id="headerAvatar">?</div>
+            <div class="header-user">
+              <div class="hu-name" id="headerUserName"></div>
+              <div class="hu-email" id="headerUserEmail"></div>
+            </div>
+            <button class="btn sm" id="signOutBtn">Logout</button>
+          </div>
+        </div>
         <button class="icon-btn" id="themeBtn" aria-label="Toggle light and dark theme">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8Z"/></svg>
         </button>
@@ -381,10 +426,25 @@ input[type="range"]{width:100%;accent-color:var(--accent);height:26px}
 
     <main class="content">
 
+      <!-- Firebase setup notice: shown only while FIREBASE_CONFIG is empty -->
+      <div class="account-notice warn" id="setupNotice" hidden role="note">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+        <div>
+          <b>Account sign-in isn't set up yet.</b>
+          VoiceBarta's Google sign-in needs a Firebase project (free tier). Create one at <b>firebase.google.com</b>, enable <b>Authentication → Google</b> and <b>Cloud Firestore</b>, then paste your Firebase web app config into the <code>FIREBASE_CONFIG</code> object at the top of this page's script. Until then, sign-in is disabled and nothing is sent to Firebase — the dashboard works as before, with History and Projects kept only for this session.
+        </div>
+      </div>
+
+      <!-- Save status: session-only vs saved to account -->
+      <div class="account-notice session" id="accountBanner" role="note">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5"/></svg>
+        <div id="accountBannerText"><b>You're not signed in.</b> History and Projects are kept only for this session and are <b>not saved</b> — they'll be gone when you close or reload the page. Sign in with Google to save them to your account and see them on any device.</div>
+      </div>
+
       <!-- ===== HOME ===== -->
       <section class="page active" id="page-home">
         <div class="page-head">
-          <h2>Welcome back, Antor</h2>
+          <h2 id="welcomeTitle">Welcome back, Antor</h2>
           <p>Create natural speech from text, browse the voices on your device, and keep your work organized in projects.</p>
         </div>
 
@@ -552,7 +612,7 @@ input[type="range"]{width:100%;accent-color:var(--accent);height:26px}
       <section class="page" id="page-history">
         <div class="page-head">
           <h2>History</h2>
-          <p>Everything you generated in this session. Replay a clip, reuse its text in the studio, or copy it.</p>
+          <p id="historyIntro">Everything you generated in this session. Replay a clip, reuse its text in the studio, or copy it.</p>
         </div>
         <div class="card section-card">
           <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
@@ -612,11 +672,71 @@ input[type="range"]{width:100%;accent-color:var(--accent);height:26px}
 
 <div class="toast" id="toast" role="status"></div>
 
+<!-- Firebase (free tier) — compat builds so this page stays a classic script.
+     These only activate once a real config is pasted into FIREBASE_CONFIG below. -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
 <script>
 (function(){
 "use strict";
 var $ = function(s){ return document.querySelector(s); };
 var $$ = function(s){ return Array.prototype.slice.call(document.querySelectorAll(s)); };
+
+/* =====================================================================
+   FIREBASE_CONFIG — PASTE YOUR FIREBASE WEB APP CONFIG HERE
+   ---------------------------------------------------------------------
+   VoiceBarta's account system uses Firebase (free / Spark tier — no
+   paid plan, no billing needed):
+     1. Go to https://console.firebase.google.com and create a project.
+     2. Build → Authentication → Get started → enable "Google".
+        Also add this site's domain under Authentication → Settings →
+        Authorized domains, or sign-in will be blocked.
+     3. Build → Firestore Database → Create database.
+     4. Project settings → "Your apps" → Web app (</>) → register the
+        app, then copy the firebaseConfig object it shows you into the
+        FIREBASE_CONFIG object below, replacing the empty strings.
+   Until every value below is filled in, sign-in stays disabled and a
+   setup notice is shown in the dashboard. No config = no Firebase
+   calls are made at all. Do not paste anyone else's config here.
+   ===================================================================== */
+var FIREBASE_CONFIG = {
+  apiKey: "AIzaSyCtdMdMNtg15qwiHaT-T-OESPAUyw__wxI",
+  authDomain: "voicebarta-5a57d.firebaseapp.com",
+  projectId: "voicebarta-5a57d",
+  storageBucket: "voicebarta-5a57d.firebasestorage.app",
+  messagingSenderId: "445321622715",
+  appId: "1:445321622715:web:b9ac84223bd5c25d24659e"
+};
+
+/* =====================================================================
+   FIRESTORE SECURITY RULE — paste this into Firebase console →
+   Firestore Database → Rules, so each user can only ever access
+   their own data (this is what keeps accounts separate):
+
+   rules_version = '2';
+   service cloud.firestore {
+     match /databases/{database}/documents {
+       // Only a signed-in user may read or write their own
+       // users/{uid} documents (history, projects, and the profile).
+       match /users/{userId} {
+         allow read, write: if request.auth != null
+                            && request.auth.uid == userId;
+         match /{document=**} {
+           allow read, write: if request.auth != null
+                              && request.auth.uid == userId;
+         }
+       }
+     }
+   }
+   ===================================================================== */
+
+/* ---------------- Account state ---------------- */
+var fb = { app:null, auth:null, db:null, user:null, ready:false, loading:false };
+function firebaseConfigured(){
+  return !!(FIREBASE_CONFIG.apiKey && FIREBASE_CONFIG.authDomain && FIREBASE_CONFIG.projectId && FIREBASE_CONFIG.appId);
+}
 
 /* ---------------- State (this session only) ---------------- */
 var state = {
@@ -644,6 +764,184 @@ function toast(msg){
   var t=$("#toast"); t.textContent=msg; t.classList.add("show");
   clearTimeout(toastTimer); toastTimer=setTimeout(function(){ t.classList.remove("show"); }, 2400);
 }
+
+/* ---------------- Account system (Firebase Auth + Firestore) ----------------
+   Signed in:  History → users/{uid}/history, Projects → users/{uid}/projects.
+   Signed out: everything stays in this tab's memory only, exactly as before. */
+function userDoc(){ return fb.db.collection("users").doc(fb.user.uid); }
+function historyCol(){ return userDoc().collection("history"); }
+function projectsCol(){ return userDoc().collection("projects"); }
+
+function setBannerSignedIn(){
+  var b=$("#accountBanner"); b.className="account-notice signed";
+  $("#accountBannerText").innerHTML="<b>Signed in as "+esc(fb.user.displayName||fb.user.email||"you")+"</b> ("+esc(fb.user.email||"")+"). Your History and Projects are saved to your account and load on any device when you sign in. Only you can see them.";
+  $("#historyIntro").textContent="Everything you've generated, saved to your account. Replay a clip, reuse its text in the studio, or copy it.";
+}
+function setBannerSignedOut(){
+  var b=$("#accountBanner"); b.className="account-notice session";
+  $("#accountBannerText").innerHTML="<b>You're not signed in.</b> History and Projects are kept only for this session and are <b>not saved</b> — they'll be gone when you close or reload the page. Sign in with Google to save them to your account and see them on any device.";
+  $("#historyIntro").textContent="Everything you generated in this session. Replay a clip, reuse its text in the studio, or copy it.";
+}
+function updateAuthUI(){
+  var u=fb.user;
+  $("#signInBtn").hidden=!!u;
+  $("#signedInBox").hidden=!u;
+  if(u){
+    var name=u.displayName||u.email||"Signed in";
+    $("#headerUserName").textContent=name;
+    $("#headerUserEmail").textContent=u.email||"";
+    var av=$("#headerAvatar");
+    if(u.photoURL){ av.innerHTML='<img src="'+esc(u.photoURL)+'" alt="" referrerpolicy="no-referrer" />'; }
+    else { av.textContent=(name.charAt(0)||"?").toUpperCase(); }
+    $("#sideAvatar").textContent=(name.charAt(0)||"?").toUpperCase();
+    $("#sideUserName").textContent=name;
+    $("#sideUserPlan").textContent="Signed in · saved to your account";
+    $("#welcomeTitle").textContent="Welcome back, "+name.split(" ")[0];
+    setBannerSignedIn();
+  } else {
+    $("#sideAvatar").textContent="A";
+    $("#sideUserName").textContent="Antor";
+    $("#sideUserPlan").textContent="Personal workspace · not signed in";
+    $("#welcomeTitle").textContent="Welcome back, Antor";
+    setBannerSignedOut();
+  }
+}
+
+/* Cloud persistence — every helper quietly no-ops when signed out,
+   so the signed-out behaviour is untouched session-only state. */
+function cloudSaveHistory(entry){
+  if(!fb.user || !fb.db) return;
+  historyCol().doc(String(entry.id)).set({
+    text:entry.text, voiceName:entry.voiceName, voiceURI:entry.voiceURI||"",
+    lang:entry.lang||"", rate:entry.rate, pitch:entry.pitch, time:entry.time,
+    createdAt:entry.createdAt||Date.now()
+  }).catch(function(){ /* offline etc. — session copy still works */ });
+}
+function cloudDeleteHistory(id){
+  if(!fb.user || !fb.db) return;
+  historyCol().doc(String(id)).delete().catch(function(){});
+}
+function cloudClearHistory(){
+  if(!fb.user || !fb.db) return;
+  historyCol().get().then(function(snap){
+    var batch=fb.db.batch();
+    snap.forEach(function(d){ batch.delete(d.ref); });
+    return batch.commit();
+  }).catch(function(){});
+}
+function cloudSaveProject(p){
+  if(!fb.user || !fb.db) return;
+  projectsCol().doc(String(p.id)).set({
+    name:p.name, created:p.created,
+    items:p.items.map(function(it){
+      return { id:it.id, text:it.text, voiceName:it.voiceName||"", voiceURI:it.voiceURI||"", time:it.time };
+    }),
+    updatedAt:Date.now()
+  }).catch(function(){});
+}
+function cloudDeleteProject(id){
+  if(!fb.user || !fb.db) return;
+  projectsCol().doc(String(id)).delete().catch(function(){});
+}
+
+function loadUserData(){
+  if(!fb.user || !fb.db || fb.loading) return;
+  fb.loading=true;
+  toast("Loading your saved History and Projects…");
+  var keepChars=state.charsUsed;
+  Promise.all([historyCol().get(), projectsCol().get()]).then(function(res){
+    function docId(raw){ return /^\d+$/.test(raw)? parseInt(raw,10) : raw; }
+    function bump(id){ if(typeof id==="number" && id>=uid) uid=id+1; }
+    var hist=[];
+    res[0].forEach(function(d){
+      var v=d.data(), id=docId(d.id); bump(id);
+      hist.push({ id:id, text:v.text||"", voiceName:v.voiceName||"", voiceURI:v.voiceURI||"",
+        lang:v.lang||"", rate:(typeof v.rate==="number"?v.rate:1), pitch:(typeof v.pitch==="number"?v.pitch:1),
+        time:v.time||"", createdAt:v.createdAt||0 });
+    });
+    hist.sort(function(a,b){ return b.createdAt-a.createdAt; });
+    var projs=[];
+    res[1].forEach(function(d){
+      var v=d.data(), id=docId(d.id); bump(id);
+      projs.push({ id:id, name:v.name||"Untitled project", created:v.created||"",
+        items:Array.isArray(v.items)? v.items.map(function(it){
+          bump(it.id);
+          return { id:it.id, text:it.text||"", voiceName:it.voiceName||"", voiceURI:it.voiceURI||"", time:it.time||"" };
+        }) : [] });
+    });
+    state.history=hist;
+    state.projects=projs;
+    state.charsUsed=keepChars;
+    fb.loading=false;
+    updateStats(); renderAllLists(); renderProjects(); renderSaveSelect();
+    toast("Welcome back — your saved data is loaded");
+  }).catch(function(){
+    fb.loading=false;
+    toast("Couldn't load your saved data — check your connection");
+  });
+}
+
+function initFirebase(){
+  if(!firebaseConfigured()){
+    /* No config pasted yet: honest setup state, never a fake login. */
+    $("#setupNotice").hidden=false;
+    var btn=$("#signInBtn");
+    btn.disabled=true;
+    btn.title="Add your Firebase config (FIREBASE_CONFIG at the top of the script) to enable sign-in";
+    updateAuthUI();
+    return;
+  }
+  if(typeof firebase==="undefined" || !firebase.auth || !firebase.firestore){
+    /* SDK blocked/offline: keep the dashboard working, say so plainly. */
+    $("#setupNotice").hidden=false;
+    $("#setupNotice").querySelector("div").innerHTML="<b>Sign-in couldn't start.</b> The Firebase libraries didn't load (check your connection and reload). The dashboard still works with device voices, and History and Projects stay session-only until sign-in is available.";
+    $("#signInBtn").disabled=true;
+    updateAuthUI();
+    return;
+  }
+  try{
+    fb.app=firebase.initializeApp(FIREBASE_CONFIG);
+    fb.auth=firebase.auth();
+    fb.db=firebase.firestore();
+    fb.ready=true;
+  }catch(e){
+    $("#setupNotice").hidden=false;
+    $("#signInBtn").disabled=true;
+    updateAuthUI();
+    return;
+  }
+  fb.auth.onAuthStateChanged(function(user){
+    var wasUser=fb.user;
+    fb.user=user||null;
+    updateAuthUI();
+    if(user){
+      /* Save a small profile doc at users/{uid} for reference. */
+      userDoc().set({ name:user.displayName||"", email:user.email||"", lastSignIn:Date.now() }, { merge:true }).catch(function(){});
+      if(!wasUser || wasUser.uid!==user.uid) loadUserData();
+    } else if(wasUser){
+      /* Signed out: back to a clean session-only workspace. */
+      state.history=[]; state.projects=[];
+      createProject("My first project");
+      updateStats(); renderAllLists();
+    }
+  });
+}
+$("#signInBtn").addEventListener("click", function(){
+  if(!fb.ready || !fb.auth) return;
+  var provider=new firebase.auth.GoogleAuthProvider();
+  fb.auth.signInWithPopup(provider).catch(function(err){
+    if(err && err.code==="auth/popup-blocked"){
+      fb.auth.signInWithRedirect(provider).catch(function(){ toast("Sign-in failed — please try again"); });
+    } else if(err && err.code!=="auth/popup-closed-by-user" && err.code!=="auth/cancelled-popup-request"){
+      toast("Sign-in failed: "+((err && err.message)||"please try again"));
+    }
+  });
+});
+$("#signOutBtn").addEventListener("click", function(){
+  if(!fb.auth) return;
+  fb.auth.signOut().then(function(){ toast("Signed out — History and Projects are session-only again"); })
+    .catch(function(){ toast("Sign-out failed — please try again"); });
+});
 
 /* ---------------- Navigation ---------------- */
 var TITLES={home:"Home",studio:"Text to Speech",voices:"Voice Library",projects:"Projects",history:"History",settings:"Settings"};
@@ -953,8 +1251,9 @@ $("#generateBtn").addEventListener("click", function(){
     if(state.sweet && state.sweet.female){ voiceName="Sweet Female · "+voiceName; }
     else { voiceName="Sweet Female (default voice) · "+voiceName; sweetNote=" No female voice on this device — using your default voice with the sweet tone."; }
   }
-  var entry={id:nextId(), text:text, voiceName:voiceName, voiceURI:v.voiceURI, lang:v.lang, rate:rate, pitch:pitch, time:nowTime()};
+  var entry={id:nextId(), text:text, voiceName:voiceName, voiceURI:v.voiceURI, lang:v.lang, rate:rate, pitch:pitch, time:nowTime(), createdAt:Date.now()};
   state.history.unshift(entry);
+  cloudSaveHistory(entry);
   state.charsUsed+=text.length;
   state.speakingId=entry.id;
   setStatus("Generating with <b>"+esc(entry.voiceName)+"</b>…"+esc(sweetNote));
@@ -1009,6 +1308,7 @@ function bindHistoryRows(scope){
   $$("#"+scope+" [data-del]").forEach(function(b){
     b.addEventListener("click", function(){
       state.history=state.history.filter(function(x){return x.id!=b.dataset.del;});
+      cloudDeleteHistory(b.dataset.del);
       updateStats(); renderAllLists(); toast("Removed from history");
     });
   });
@@ -1027,7 +1327,7 @@ function renderHistory(){
 }
 $("#clearHistoryBtn").addEventListener("click", function(){
   if(!state.history.length){ toast("History is already empty"); return; }
-  state.history=[]; updateStats(); renderAllLists(); toast("History cleared");
+  state.history=[]; cloudClearHistory(); updateStats(); renderAllLists(); toast("History cleared");
 });
 
 /* ---------------- Projects ---------------- */
@@ -1060,12 +1360,14 @@ function renderProjects(){
       var parts=b.dataset.pdel.split(":"); var pid=+parts[0], iid=+parts[1];
       var p=state.projects.filter(function(x){return x.id===pid;})[0]; if(!p) return;
       p.items=p.items.filter(function(x){return x.id!==iid;});
+      cloudSaveProject(p);
       renderProjects(); renderSaveSelect();
     });
   });
   $$("#projectGrid [data-del-project]").forEach(function(b){
     b.addEventListener("click", function(){
       state.projects=state.projects.filter(function(x){return x.id!=b.dataset.delProject;});
+      cloudDeleteProject(b.dataset.delProject);
       renderProjects(); renderSaveSelect(); updateStats(); toast("Project deleted");
     });
   });
@@ -1087,6 +1389,7 @@ function createProject(name){
   if(!name){ toast("Give the project a name first"); return null; }
   var p={id:nextId(), name:name, created:new Date().toLocaleDateString([], {month:"short", day:"numeric", year:"numeric"}), items:[]};
   state.projects.unshift(p);
+  cloudSaveProject(p);
   renderProjects(); renderSaveSelect(); updateStats();
   return p;
 }
@@ -1103,6 +1406,7 @@ $("#saveToProjectBtn").addEventListener("click", function(){
   if(!p){ toast("Create a project first"); go("projects"); return; }
   var v=selectedVoice();
   p.items.unshift({id:nextId(), text:text, voiceName:v?cleanVoiceName(v):"", voiceURI:v?v.voiceURI:"", time:nowTime()});
+  cloudSaveProject(p);
   renderProjects();
   toast("Saved to "+p.name);
 });
@@ -1136,6 +1440,7 @@ updateStats();
 renderAllLists();
 renderProjects();
 renderSaveSelect();
+initFirebase();
 if(!("speechSynthesis" in window)){
   setStatus("Speech synthesis isn't supported in this browser — try Chrome or Edge to hear voices.");
   $("#generateBtn").disabled=true;
